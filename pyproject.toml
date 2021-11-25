@@ -4,5 +4,6 @@ requires = ["setuptools",
             "setuptools_scm",
             "wheel",
             "beautifulsoup4",
-	    "myst-parser",
+	        "myst-parser",
+            "sphinx_autodoc_annotation",
             "extension-helpers"]
