@@ -25,13 +25,8 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-    - name: setup python
-      working-directory: ./
-      run: |
-        pip install -r requirements.txt
-        pip install .
-    - name: Setup tmate session   # Debugging
-      uses: mxschmitt/action-tmate@v3
+    # - name: Setup tmate session   # Debugging
+    #   uses: mxschmitt/action-tmate@v3
     - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
@@ -41,7 +36,7 @@ jobs:
     - name: Commit documentation changes
       run: |
         git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
-        cp -r doc/_build/html/* gh-pages/
+        cp -r docs/_build/html/* gh-pages/
         cd gh-pages
         touch .nojekyll
         git config --local user.email "action@github.com"
