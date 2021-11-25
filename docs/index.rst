@@ -27,8 +27,9 @@ Examples of results
 .. toctree::
    :maxdepth: 2
    :caption: papers:
+   :glob:
 
-   examples/2111.06672.md
+   examples/*
 
 
 Examples
