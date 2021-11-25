@@ -18,11 +18,17 @@ from typing import Sequence
 import time
 
 
-def collect_summary_information(paper_id: str, content_requirements: callable = None) -> dict:
-    """ Extract necessary information from the vanity webpage """
+def collect_summary_information(paper_id: str,
+                                content_requirements: callable = None) -> dict:
+    """ Extract necessary information from the vanity webpage
+
+    :raises HTTPError: If vanity is not accessible
+    :raises RuntimeError: if the content_requirements returns False for this paper
+    :return: a dictionary with the following keys: (title, authors, abstract, paper_id, url, figures, and the soup object)
+    """
 
     url = f"https://www.arxiv-vanity.com/papers/{paper_id:s}/"
-    
+
     # Get the paper data (wait if necessary)
     retrieved = False
     while(not retrieved):
@@ -31,7 +37,7 @@ def collect_summary_information(paper_id: str, content_requirements: callable = 
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
             if 'This paper is rendering!' in response.content.decode():
-                print("We need to wait for the paper to be ready on Vanity...\n", 
+                print("We need to wait for the paper to be ready on Vanity...\n",
                     url)
                 for count in reversed(range(1, 31)):
                     print("Retry in {0:02d} seconds...".format(count), end='\r')
@@ -64,7 +70,7 @@ def collect_summary_information(paper_id: str, content_requirements: callable = 
     else:
         authors = [k.text.replace('\n', '').strip() for k in authors]
     authors = list(filter(lambda x: x, authors))  # keep non-empty
-    
+
     # Get Abstract
     abstract = soup.find_all('div', {'class': "ltx_abstract"})[0].find_all('p')[0].text
 
@@ -77,24 +83,29 @@ def collect_summary_information(paper_id: str, content_requirements: callable = 
         if not captions:
             continue
         caption_start_with = "Figure "
-        caption = [k for k in captions 
+        caption = [k for k in captions
                     if k[:len(caption_start_with)] == caption_start_with]
-        if not caption: 
+        if not caption:
             continue
         num += 1
         figures[num] = (images if len(images) > 1 else images[0], caption[-1])
-        
-    return dict(title=title.strip(), 
-                authors=authors, 
-                abstract=abstract, 
+
+    return dict(title=title.strip(),
+                authors=authors,
+                abstract=abstract,
                 paper_id=paper_id,
                 url=url,
-                figures=figures, 
+                figures=figures,
                 soup=soup)
 
 
 def select_most_cited_figures(content: dict, N: int = 3) -> Sequence:
-    """ Finds the number of references to each figure and select the N most cited ones """
+    """ Finds the number of references to each figure and select the N most cited ones
+
+    :param content: the content of the paper
+    :param N: the number of figures to select
+    :return: a list of N figures
+    """
     # Find the number of references to each figure
     F_counts = {}
     soup = content['soup']
@@ -112,15 +123,25 @@ def select_most_cited_figures(content: dict, N: int = 3) -> Sequence:
 
 
 def highlight_author(author_list: Sequence[str], author: str) -> Sequence[str]:
-    """ Highlight particular authors """
+    """ Highlight a particular author in the list of authors
+
+    :param author_list: the list of authors
+    :param author: the author to highlight
+    :return: the list of authors with the highlighted author
+    """
     # TODO: make it a word matching regex
     new_lst = [f"<mark>{name}</mark>" if author in name else name for name in author_list]
     return new_lst
 
 
-def highlight_authors_in_list(author_list: Sequence[str], 
+def highlight_authors_in_list(author_list: Sequence[str],
                               hl_list: Sequence[str]) -> Sequence[str]:
-    """ highlight all authors of the paper that match `lst` entries """
+    """ highlight all authors of the paper that match `lst` entries
+
+    :param author_list: the list of authors
+    :param hl_list: the list of authors to highlight
+    :return: the list of authors with the highlighted authors
+    """
     new_authors = []
     for author in author_list:
         found = False
@@ -131,14 +152,18 @@ def highlight_authors_in_list(author_list: Sequence[str],
                 break
         if (not found):
             new_authors.append(f"{author}")
-        
+
     return new_authors
 
 
-def make_short_author_list(authors: Sequence[str], 
+def make_short_author_list(authors: Sequence[str],
                            nmin: int = 4) -> Sequence[str]:
     """ Make a short author list if there are more authors than nmin
     This means <first author> et al., -- incl <list of hihglighted authors>
+
+    :param authors: the list of authors
+    :param nmin: the minimum number of authors to switch to short representation
+    :return: the list of authors
     """
     if len(authors) <= nmin:
         return authors
@@ -150,6 +175,11 @@ def make_short_author_list(authors: Sequence[str],
 
 
 def generate_markdown_text(content: dict) -> str:
+    """Generate the summary markdown content
+
+    :param content: the content of the paper
+    :return: the markdown representation of the paper
+    """
     title = content['title']
     paper_id = content['paper_id']
     url = content['url']
