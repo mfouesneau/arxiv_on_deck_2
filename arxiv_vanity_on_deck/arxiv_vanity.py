@@ -203,7 +203,7 @@ def generate_markdown_text(content: dict) -> str:
             #    [f'![Fig{num:d}.{sub:d}]({figsub})' for sub, figsub in enumerate(fig, 1)]
             #)
             current = ''.join(
-                [f'<img src="{figsub}" alt="Fig{num:d}.{sub:d}" width="{width}%"/>' for sub, figsub in enumerate(fig, 1)]
+                [f'<a href={figsub}><img src="{figsub}" alt="Fig{num:d}.{sub:d}" width="{width}%"/></a>' for sub, figsub in enumerate(fig, 1)]
             ) + '\n'
         else:
             current = f"![Fig{num:d}]({fig})\n"
