@@ -1,6 +1,6 @@
 # arxiv_vanity_on_deck
 
-[![documentation](https://github.com/mfouesneau/arxiv_vanity_on_deck/actions/workflows/sphinxdocumentation.yml/badge.svg)](https://mfouesneau.github.io/arxiv_vanity_on_deck)
+[![documentation](https://github.com/mfouesneau/arxiv_vanity_on_deck/actions/workflows/documentation.yml/badge.svg)](https://mfouesneau.github.io/arxiv_vanity_on_deck)
 
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/mfouesneau/arxiv_vanity_on_deck/master)
 
