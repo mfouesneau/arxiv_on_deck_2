@@ -11,9 +11,7 @@ If the paper is not already stored, it will be processed.
 
 import requests
 from requests.exceptions import HTTPError
-from io import BytesIO
 from bs4 import BeautifulSoup
-from IPython.display import Markdown
 from typing import Sequence
 import time
 
