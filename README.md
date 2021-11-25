@@ -15,6 +15,9 @@ It is a sort of Arxiver for institutes or groups
 
 ## Examples
 
+[![nbviewer](https://img.shields.io/badge/render%20on-nbviewer-orange.svg)](https://nbviewer.org/github/mfouesneau/arxiv_vanity_on_deck/blob/main/examples/notebook.ipynb) view notebook
+
+
 #### Generating a paper Mardown summary
 
 ```python
