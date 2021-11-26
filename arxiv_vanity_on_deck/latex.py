@@ -85,6 +85,10 @@ class LatexFigure(dict):
         self['images'] = new_images
 
     def generate_markdown_text(self):
+        """  Generate the markdown summary
+
+        :return: markdown text
+        """
         if (len(self['images']) > 1):
             width = 100 // len(self['images'])
             current = ''.join(
