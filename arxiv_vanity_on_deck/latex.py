@@ -158,6 +158,7 @@ class LatexDocument:
         self._abstract = None
         self._title = None
         self._authors = None
+        self.comment = None
 
         with open(self.main_file, 'r') as fin:
             main_tex = fin.read()
@@ -250,6 +251,27 @@ class LatexDocument:
             self._authors = self.get_authors()
         return self._authors
 
+    @property
+    def short_authors(self, nmin: int = 4) -> Sequence[str]:
+        """ Make a short author list if there are more authors than nmin
+        This means <first author> et al., -- incl <list of hihglighted authors>
+
+        :param authors: the list of authors
+        :param nmin: the minimum number of authors to switch to short representation
+        :return: the list of authors
+        """
+        authors = self.authors
+        if len(authors) <= nmin:
+            return authors
+        # short list means first author, et al. -- incl. [hl_list]
+        short_list = [authors[0]] + [k for k in authors[1:] if '<mark>' in k]
+        if len(short_list) < len(authors):
+            if short_list[1:]:
+                short_list = [short_list[0] + ', et al. -- incl.'] + short_list[1:]
+            else:
+                short_list = [short_list[0] + ', et al.']
+        return short_list
+
     def select_most_cited_figures(self, N: int = 4):
         """ Finds the number of references to each figure and select the N most cited ones
 
@@ -266,10 +288,12 @@ class LatexDocument:
         """
         latex_abstract = self.abstract
         latex_title = self.title
-        latex_figures = self.figures
-        latex_authors = self.authors
+        latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = self.select_most_cited_figures()
+
+        if self.comment:
+            joined_latex_authors = '\n\n'.join([self.comment, joined_latex_authors])
 
         text = f"""# {latex_title}\n\n {joined_latex_authors} \n\n **Abstract:** {latex_abstract}"""
         if with_figures:
