@@ -12,13 +12,22 @@ try:
     from IPython.display import Markdown
 except ImportError:
     Markdown = None
-    
+
 
 class ArxivPaper(dict):
-    """ Paper representation using ArXiv information """
+    """ Paper representation using ArXiv information
+
+    A dictionary like structure that contains:
+
+    - identifier: the arxiv identification number
+    - title: the title of the paper
+    - authors: the authors of the paper
+    - comments: the comments of the paper
+    - abstract: the abstract of the paper
+    """
     def __init__(self, **paper_data):
         super().__init__(paper_data)
-        
+
     @property
     def short_authors(self, nmin: int = 4) -> Sequence[str]:
         """ Make a short author list if there are more authors than nmin
@@ -34,15 +43,20 @@ class ArxivPaper(dict):
         # short list means first author, et al. -- incl. [hl_list]
         short_list = [authors[0]] + [k for k in authors[1:] if '<mark>' in k]
         if len(short_list) < len(authors):
-            if short_list[1:]: 
+            if short_list[1:]:
                 short_list = [short_list[0] + ', et al. -- incl.'] + short_list[1:]
             else:
                 short_list = [short_list[0] + ', et al.']
         return short_list
-        
+
     @classmethod
     def from_bs4_tags(cls, dt: Tag, dd: Tag):
-        """ extract paper information from its pair of tags """
+        """ extract paper information from its pair of tags
+
+        :param dt: the tag of the title
+        :param dd: the tag of the description
+        :return: the paper object
+        """
         identifier = dt.find("a", attrs={'title':"Abstract"}).text
         authors = [k.text.strip() for k in dd.find('div', attrs={'class':"list-authors"}).find_all('a')]
         abstract = dd.find('p')\
@@ -60,39 +74,43 @@ class ArxivPaper(dict):
                          .strip()
         except AttributeError:
             comments = ""
-            
 
-        data = dict(identifier=identifier, 
-                    authors=authors, 
+
+        data = dict(identifier=identifier,
+                    authors=authors,
                     abstract=abstract,
                     title=title,
                     comments=comments)
         return ArxivPaper(**data)
-    
-    def generate_markdown_text(self):
-        """ Generate the markdown text of this paper """
+
+    def generate_markdown_text(self) -> str:
+        """ Generate the markdown text of this paper
+
+        :return: the markdown text summary of the paper
+        """
         joined_authors = ', '.join(self.short_authors)
-        return """ 
+        return """
 |||
 |---:|:---|
 | [![arXiv](https://img.shields.io/badge/arXiv-{identifier}-b31b1b.svg)](https://arxiv.org/abs/{identifier}) | **{title}**  |
 || {joined_authors} |
 |*Comments*| *{comments}*|
 |**Abstract**| {abstract}|""".format(joined_authors=joined_authors, **self)
-    
+
     def _repr_markdown_(self):
         if Markdown is None:
             raise ImportError('could not import `IPython.display.Markdown`')
         return Markdown(self.generate_markdown_text())._repr_markdown_()
-    
+
     def __repr__(self):
         joined_authors = ', '.join(self.short_authors)
         txt = """[{identifier}] {title}\n\t{joined_authors}"""
         return txt.format(joined_authors=joined_authors, **self)
-    
-    
+
+
 def get_new_papers() -> Sequence[ArxivPaper]:
     """retrieve the new list from the website.
+
     :return: list of ArXivPaper objects
     """
     url = "https://arxiv.org/list/astro-ph/new"
@@ -105,9 +123,9 @@ def get_new_papers() -> Sequence[ArxivPaper]:
     return new_papers
 
 
-def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper: 
-    """ Retrieve a paper from Arxiv using its identifier 
-    
+def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
+    """ Retrieve a paper from Arxiv using its identifier
+
     :param paper_identifier: arxiv identifier of the paper
     :return: Paper object
     """
@@ -133,8 +151,8 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
                    .text.replace('\n', '')\
                    .strip()
 
-    data = dict(identifier=paper_identifier, 
-                authors=authors, 
+    data = dict(identifier=paper_identifier,
+                authors=authors,
                 abstract=abstract,
                 title=title,
                 comments=comments)
@@ -144,7 +162,7 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
 
 def retrieve_document_source(identifier: str, directory: str) -> str:
     """ Retrieve document source tarball and extract it.
-    
+
     :param identifier: Paper identification number from Arxiv
     :param directory: where to store the extracted files
     :return: directory in which the data was extracted
