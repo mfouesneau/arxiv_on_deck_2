@@ -210,3 +210,12 @@ def generate_markdown_text(content: dict) -> str:
         current += f'\n{caption}'
         figure_text.append(current)
     return text + '\n\n'.join(figure_text)
+
+
+def get_arxiv_vanity_badge(identifier: str) -> str:
+    """ Generate the markdown badge for a paper
+
+    :param identifier: arxiv identifier of the paper
+    :return: markdown badge
+    """
+    return "[![vanity](https://img.shields.io/badge/vanity-{identifier}-f9f107.svg)](https://www.arxiv-vanity.com/papers/{identifer})"
