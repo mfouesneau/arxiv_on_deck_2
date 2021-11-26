@@ -236,12 +236,12 @@ class LatexDocument:
         :param with_figures: if True, the figures are included in the summary
         :return: markdown text
         """
-        latex_abstract = self.get_abstract()
-        latex_title = self.get_title()
-        latex_figures = self.get_all_figures()
-        latex_authors = self.get_authors()
+        latex_abstract = self.abstract
+        latex_title = self.title
+        latex_figures = self.figures
+        latex_authors = self.authors
         joined_latex_authors = ', '.join(latex_authors)
-        selected_latex_figures = select_most_cited_figures(latex_figures, self.content)
+        selected_latex_figures = self.select_most_cited_figures()
 
         text = f"""|    |\n|:---|\n| **{latex_title}**  |\n| {joined_latex_authors} |\n| {latex_abstract} |"""
         if with_figures:
