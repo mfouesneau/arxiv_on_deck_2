@@ -15,6 +15,8 @@ The main goal of this package is to find papers authored by a given list of auth
 
 It is a sort of Arxiver for institutes or groups
 
+⚠️ This package entirely relies on [arXiv Vanity](https://www.arxiv-vanity.com/) to correctly render the documents. It is often having issues or incorrect rendering.
+
 ## Examples
 
 [![nbviewer](https://img.shields.io/badge/render%20on-nbviewer-orange.svg)](https://nbviewer.org/github/mfouesneau/arxiv_vanity_on_deck/blob/main/examples/notebook.ipynb) view notebook
