@@ -109,7 +109,13 @@ class LatexFigure(dict):
 def select_most_cited_figures(figures: Sequence[LatexFigure],
                               content: dict,
                               N: int = 3) -> Sequence[LatexFigure]:
-    """ Finds the number of references to each figure and select the N most cited ones """
+    """ Finds the number of references to each figure and select the N most cited ones
+    
+    :param figures: list of all figures
+    :param content: paper content from TexSoup
+    :param N: number of figures to select
+    :return: list of selected figures
+    """
     # Find the number of references to each figure
     sorted_figures = sorted([(content.text.count(fig['label']), fig) for fig in figures],
                             key=lambda x: x[0], reverse=True)
@@ -125,10 +131,18 @@ class LatexDocument:
     :param folder: folder containing the document
     :param main_file: name of the main document
     :param content: the document content from TexSoup
+    :param title: the title of the paper
+    :param authors: the authors of the paper
+    :param comments: the comments of the paper
+    :param abstract: the abstract of the paper
     """
     def __init__(self, folder: str):
         self.main_file = find_main_doc(folder)
         self.folder = folder
+        self._figures = None
+        self._abstract = None
+        self._title = None
+        self._authors = None
 
         with open(self.main_file, 'r') as fin:
             main_tex = fin.read()
@@ -151,6 +165,13 @@ class LatexDocument:
             fig = LatexFigure(num=num, images=images, caption=caption, label=label)
             data.append(fig)
         return data
+    
+    @property
+    def figures(self) -> Sequence[LatexFigure]:
+        """ All figures from the paper """
+        if not self._figures:
+            self._figures = self.get_all_figures()
+        return self._figures
 
     def get_abstract(self) -> str:
         """ Extract abstract from document """
@@ -159,6 +180,13 @@ class LatexDocument:
         abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
         abstract = ''.join(abstract)
         return abstract
+    
+    @property
+    def abstract(self) -> str:
+        """ All figures from the paper """
+        if not self._abstract:
+            self._abstract = self.get_abstract()
+        return self._abstract
 
     def get_title(self) -> str:
         """ Extract document's title """
@@ -168,6 +196,13 @@ class LatexDocument:
             return ': '.join([title, subtitle])
         except:
             return title
+        
+    @property
+    def title(self) -> str:
+        """ All figures from the paper """
+        if not self._title:
+            self._title = self.get_title()
+        return self._title
 
     def get_authors(self) -> Sequence[str]:
         """ Get list of authors """
@@ -179,6 +214,21 @@ class LatexDocument:
                                 .replace(',', '')\
                                 .strip())
         return authors
+    
+    @property
+    def authors(self) -> str:
+        """ All figures from the paper """
+        if not self._authors:
+            self._authors = self.get_authors()
+        return self._authors
+    
+    def select_most_cited_figures(self, N: int = 4):
+        """ Finds the number of references to each figure and select the N most cited ones
+    
+        :param N: number of figures to select
+        :return: list of selected figures
+        """
+        return select_most_cited_figures(self.figures, self.content)
 
     def generate_markdown_text(self, with_figures:bool =True) -> str:
         """ Generate the markdown summary
