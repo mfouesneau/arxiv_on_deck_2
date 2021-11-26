@@ -1,22 +1,26 @@
 from glob import glob
 import pathlib
 from typing import Union, Sequence
-import re 
+import re
 from TexSoup import TexSoup
+try:
+    from IPython.display import Markdown
+except ImportError:
+    Markdown = None
 from pdf2image import convert_from_path
 # Requires poppler system library
 # !pip3 install pdf2image
 
 
 def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
-    """ Attempt to find which TeX file is the main document 
-    
+    """ Attempt to find which TeX file is the main document.
+
     :param folder: folder containing the document
     :return: filename of the main document
     """
-    
+
     texfiles = list(pathlib.Path(f"{folder}").glob("**/*.tex"))
-    
+
     if (len(texfiles) == 1):
         return str(texfiles[0])
 
@@ -37,9 +41,10 @@ def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
 
 
 def convert_pdf_to_image(fname: str) -> str:
-    """ Convert image from PDF to png
+    """ Convert image from PDF to png.
+
     The new image is stored with the original one
-    
+
     :param fname: file to potentially convert
     """
     from pdf2image import convert_from_path
@@ -47,19 +52,27 @@ def convert_pdf_to_image(fname: str) -> str:
     rootname = fname.replace('.pdf', '')
     if len(pages) > 1:
         for num, page in enumerate(pages, 1):
-            page.save(f'{rootname}.{num:d}.png', 'PNG') 
+            page.save(f'{rootname}.{num:d}.png', 'PNG')
         return f'{rootname}.*.png'
     else:
         pages[0].save(f'{rootname}.png', 'PNG')
         return f'{rootname}.png'
-        
+
 
 class LatexFigure(dict):
-    """ Representation of a figure from a LatexDocument """
+    """ Representation of a figure from a LatexDocument
+
+    A dictionary-like structure that contains:
+    - num: figure number
+    - caption: figure caption
+    - label: figure label
+    - images: list of images
+
+    """
     def __init__(self, **data):
         super().__init__(data)
         self._check_pdf_figure()
-    
+
     def _check_pdf_figure(self):
         """ Check if PDF images and convert to PNG if needed """
         images = self['images']
@@ -70,29 +83,31 @@ class LatexFigure(dict):
             else:
                 new_images.append(image)
         self['images'] = new_images
-    
+
     def generate_markdown_text(self):
-        if (len(self['images']) > 1):        
+        if (len(self['images']) > 1):
             width = 100 // len(self['images'])
             current = ''.join(
-                [f'<img src="{figsub}" alt="Fig{num:d}.{sub:d}" width="{width}%"/>' 
+                [f'<img src="{figsub}" alt="Fig{num:d}.{sub:d}" width="{width}%"/>'
                  for sub, figsub in enumerate(self['images'], 1)]
             )
         else:
             current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
 
         return """|{current}|\n|---------|\n|**Figure {num}. -** {caption} (*{label}*)|""".format(current=current, **self)
-    
+
     def _repr_markdown_(self):
+        if Markdown is None:
+            raise ImportError('could not import `IPython.display.Markdown`')
         return Markdown(self.generate_markdown_text())._repr_markdown_()
-    
-    
-def select_most_cited_figures(figures: Sequence[LatexFigure], 
-                              content: dict, 
+
+
+def select_most_cited_figures(figures: Sequence[LatexFigure],
+                              content: dict,
                               N: int = 3) -> Sequence[LatexFigure]:
     """ Finds the number of references to each figure and select the N most cited ones """
     # Find the number of references to each figure
-    sorted_figures = sorted([(content.text.count(fig['label']), fig) for fig in figures], 
+    sorted_figures = sorted([(content.text.count(fig['label']), fig) for fig in figures],
                             key=lambda x: x[0], reverse=True)
     selected_figures = [k[1] for k in sorted_figures[:N]]
     return selected_figures
@@ -100,8 +115,12 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
 
 class LatexDocument:
     """ Handles the latex document interface.
-    
+
     Allows to extract title, authors, figures, abstract
+
+    :param folder: folder containing the document
+    :param main_file: name of the main document
+    :param content: the document content from TexSoup
     """
     def __init__(self, folder: str):
         self.main_file = find_main_doc(folder)
@@ -112,7 +131,7 @@ class LatexDocument:
         self.content = TexSoup(main_tex)
 
     def get_all_figures(self) -> Sequence[LatexFigure]:
-        """ Retrieve all figures (num, images, caption, label) from a document 
+        """ Retrieve all figures (num, images, caption, label) from a document
 
         :param content: the document content
         :return: sequence of LatexFigure objects
@@ -146,7 +165,6 @@ class LatexDocument:
         except:
             return title
 
-
     def get_authors(self) -> Sequence[str]:
         """ Get list of authors """
         authors = []
@@ -157,19 +175,28 @@ class LatexDocument:
                                 .replace(',', '')\
                                 .strip())
         return authors
-    
+
     def generate_markdown_text(self, with_figures:bool =True) -> str:
-        """ Generate the markdown summary """
+        """ Generate the markdown summary
+
+        :param with_figures: if True, the figures are included in the summary
+        :return: markdown text
+        """
         latex_abstract = self.get_abstract()
         latex_title = self.get_title()
         latex_figures = self.get_all_figures()
         latex_authors = self.get_authors()
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = select_most_cited_figures(latex_figures, self.content)
-    
+
         text = f"""|    |\n|:---|\n| **{latex_title}**  |\n| {joined_latex_authors} |\n| {latex_abstract} |"""
         if with_figures:
-            figures = '\n'.join([k.generate_markdown_text().replace('|---------|\n', '') 
+            figures = '\n'.join([k.generate_markdown_text().replace('|---------|\n', '')
                                  for k in selected_latex_figures])
             return text + '\n' + figures
         return text
+
+    def _repr_markdown_(self):
+        if Markdown is None:
+            raise ImportError('could not import `IPython.display.Markdown`')
+        return Markdown(self.generate_markdown_text())._repr_markdown_()
