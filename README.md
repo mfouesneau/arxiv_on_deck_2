@@ -2,7 +2,7 @@
 
 [![documentation](https://github.com/mfouesneau/arxiv_vanity_on_deck/actions/workflows/documentation.yml/badge.svg)](https://mfouesneau.github.io/arxiv_vanity_on_deck)
 
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/mfouesneau/arxiv_vanity_on_deck/master)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/mfouesneau/arxiv_vanity_on_deck/main)
 
 This package is the next version of [arxiv_on_deck](https://github.com/mfouesneau/arxiv_on_deck),
 a quick and dirty version of the Arxiver.
