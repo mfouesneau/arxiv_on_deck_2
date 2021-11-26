@@ -48,7 +48,7 @@ def convert_pdf_to_image(fname: str) -> str:
     :param fname: file to potentially convert
     """
     from pdf2image import convert_from_path
-    pages = convert_from_path(fname, dpi=500)
+    pages = convert_from_path(fname, dpi=500, use_cropbox=True)
     rootname = fname.replace('.pdf', '')
     if len(pages) > 1:
         for num, page in enumerate(pages, 1):
@@ -110,7 +110,7 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
                               content: dict,
                               N: int = 3) -> Sequence[LatexFigure]:
     """ Finds the number of references to each figure and select the N most cited ones
-    
+
     :param figures: list of all figures
     :param content: paper content from TexSoup
     :param N: number of figures to select
@@ -122,6 +122,21 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
     selected_figures = [k[1] for k in sorted_figures[:N]]
     return selected_figures
 
+
+def clear_latex_comments(data: str):
+    """ clean text from any comment
+
+    :param data: text to clean
+    :return: cleaned text
+    """
+    lines = []
+    for line in data.splitlines():
+        try:
+            start = list(re.compile(r'(?<!\\)%').finditer(line))[0].span()[0]
+            lines.append(line[:start])
+        except IndexError:
+            lines.append(line)
+    return '\n'.join(lines)
 
 class LatexDocument:
     """ Handles the latex document interface.
@@ -146,7 +161,20 @@ class LatexDocument:
 
         with open(self.main_file, 'r') as fin:
             main_tex = fin.read()
-        self.content = TexSoup(main_tex)
+        self.content = TexSoup(self._clean_source(main_tex))
+
+    def _clean_source(self, source: str) -> str:
+        """ Clean the source of the document
+
+        :param source: the source to clean
+        :return: cleaned source
+        """
+        import re
+        source = clear_latex_comments(source).replace('$$', '$ $')
+        source = re.sub('\s+', ' ', source)
+        source = re.sub('\n+', '\n', source)
+        source = re.sub('\s+\n', '\n', source)
+        return source
 
     def get_all_figures(self) -> Sequence[LatexFigure]:
         """ Retrieve all figures (num, images, caption, label) from a document
@@ -165,7 +193,7 @@ class LatexDocument:
             fig = LatexFigure(num=num, images=images, caption=caption, label=label)
             data.append(fig)
         return data
-    
+
     @property
     def figures(self) -> Sequence[LatexFigure]:
         """ All figures from the paper """
@@ -180,7 +208,7 @@ class LatexDocument:
         abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
         abstract = ''.join(abstract)
         return abstract
-    
+
     @property
     def abstract(self) -> str:
         """ All figures from the paper """
@@ -196,7 +224,7 @@ class LatexDocument:
             return ': '.join([title, subtitle])
         except:
             return title
-        
+
     @property
     def title(self) -> str:
         """ All figures from the paper """
@@ -214,17 +242,17 @@ class LatexDocument:
                                 .replace(',', '')\
                                 .strip())
         return authors
-    
+
     @property
     def authors(self) -> str:
         """ All figures from the paper """
         if not self._authors:
             self._authors = self.get_authors()
         return self._authors
-    
+
     def select_most_cited_figures(self, N: int = 4):
         """ Finds the number of references to each figure and select the N most cited ones
-    
+
         :param N: number of figures to select
         :return: list of selected figures
         """
