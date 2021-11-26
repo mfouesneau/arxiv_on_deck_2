@@ -1,0 +1,13 @@
+poppler-utils
+texlive-latex-base
+texlive-latex-recommended
+texlive-generic-recommended
+texlive-science
+texlive-publishers
+texlive-latex-extra
+texlive-fonts-recommended
+texlive-fonts-extra
+texlive-font-utils
+dvipng
+ghostscript
+vim
