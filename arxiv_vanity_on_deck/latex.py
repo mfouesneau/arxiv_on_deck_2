@@ -280,6 +280,23 @@ class LatexDocument:
         """
         return select_most_cited_figures(self.figures, self.content)
 
+    def highlight_authors_in_list(self, hl_list: Sequence[str]):
+        """ highlight all authors of the paper that match `lst` entries
+
+        :param hl_list: list of authors to highlight
+        """
+        new_authors = []
+        for author in self.authors:
+            found = False
+            for hl in hl_list:
+                if hl in author:
+                    new_authors.append(f"<mark>{author}</mark>")
+                    found = True
+                    break
+            if not found:
+                new_authors.append(f"{author}")
+        self._authors = new_authors
+
     def generate_markdown_text(self, with_figures:bool =True) -> str:
         """ Generate the markdown summary
 
