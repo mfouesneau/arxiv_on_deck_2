@@ -98,7 +98,7 @@ class LatexFigure(dict):
         else:
             current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
 
-        return """|{current}|\n|---------|\n|**Figure {num}. -** {caption} (*{label}*)|""".format(current=current, **self)
+        return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(current=current, **self)
 
     def _repr_markdown_(self):
         if Markdown is None:
@@ -243,7 +243,7 @@ class LatexDocument:
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = self.select_most_cited_figures()
 
-        text = f"""|    |\n|:---|\n| **{latex_title}**  |\n| {joined_latex_authors} |\n| {latex_abstract} |"""
+        text = f"""# {latex_title}\n\n {joined_latex_authors} \n\n **Abstract:** {latex_abstract}"""
         if with_figures:
             figures = '\n'.join([k.generate_markdown_text().replace('|---------|\n', '')
                                  for k in selected_latex_figures])
