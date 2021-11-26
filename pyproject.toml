@@ -4,6 +4,8 @@ requires = ["setuptools",
             "setuptools_scm",
             "wheel",
             "beautifulsoup4",
+            "TexSoup",
+            "pdf2image",
 	        "myst-parser",
             "sphinx_autodoc_annotation",
             "extension-helpers"]
