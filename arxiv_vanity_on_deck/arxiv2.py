@@ -177,3 +177,12 @@ def retrieve_document_source(identifier: str, directory: str) -> str:
     tar.extractall(directory)
     print(" done.")
     return directory
+
+
+def get_markdown_badge(identifier: str) -> str:
+    """ Generate the markdown badge for a paper
+
+    :param identifier: arxiv identifier of the paper
+    :return: markdown badge
+    """
+    return f"[![arXiv](https://img.shields.io/badge/arXiv-{identifier}-b31b1b.svg)](https://arxiv.org/abs/{identifier})"
