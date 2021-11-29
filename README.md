@@ -9,7 +9,7 @@ a quick and dirty version of the Arxiver.
 
 The main goal of this package is to find papers authored by a given list of authors (e.g., a list of institute members) and only for those compiles a 1 page summary with figures (and captions).
 
-It is a sort of Arxiver for institutes or groups
+It is a sort of [Arxiver](https://arxiver.moonhats.com/) for institutes or groups
 
 This evolution initially uses [arXiv Vanity](https://www.arxiv-vanity.com/) that renders academic papers from arXiv as responsive web pages.
 This package cannot entirely rely on [arXiv Vanity](https://www.arxiv-vanity.com/) to render the documents correctly, and it is often having issues or incorrect rendering. Hence, it also implements latex parsing methods to extract information.
