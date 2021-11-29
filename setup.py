@@ -34,5 +34,9 @@ setup(name = package_name,
       ],
     zip_safe=False,
     python_requires=">=3.6",
-    install_requires=["beautifulsoup4" ]
+    install_requires=["beautifulsoup4",
+            "TexSoup",
+            "pdf2image",
+	        "myst-parser",
+    ]
 )
