@@ -16,35 +16,16 @@ from typing import Sequence
 import time
 
 
-def collect_summary_information(paper_id: str,
-                                content_requirements: callable = None) -> dict:
-    """ Extract necessary information from the vanity webpage
-
-    :raises HTTPError: If vanity is not accessible
-    :raises RuntimeError: if the content_requirements returns False for this paper
+def _parse_response(paper_id: str,
+                    response: requests.Response,
+                    content_requirements: callable = None
+                   ) -> dict:
+    """
+    :param paper_id: paper identifier
+    :param response: response from arxiv vanity
     :return: a dictionary with the following keys: (title, authors, abstract, paper_id, url, figures, and the soup object)
     """
 
-    url = f"https://www.arxiv-vanity.com/papers/{paper_id:s}/"
-
-    # Get the paper data (wait if necessary)
-    retrieved = False
-    while(not retrieved):
-        response = requests.get(url)
-        try:
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            if 'This paper is rendering!' in response.content.decode():
-                print("We need to wait for the paper to be ready on Vanity...\n",
-                    url)
-                for count in reversed(range(1, 31)):
-                    print("Retry in {0:02d} seconds...".format(count), end='\r')
-                    time.sleep(1)
-            if "failed to render" in response.content.decode():
-                raise HTTPError("Arxiv-Vanity failed to render the paper.")
-            else:
-                raise e
-        retrieved = True
     soup = BeautifulSoup(response.content, 'html.parser')
 
     if content_requirements:
@@ -85,8 +66,11 @@ def collect_summary_information(paper_id: str,
                     if k[:len(caption_start_with)] == caption_start_with]
         if not caption:
             continue
-        num += 1
-        figures[num] = (images if len(images) > 1 else images[0], caption[-1])
+        if images:
+            num += 1
+            figures[num] = (images if len(images) > 1 else images[0], caption[-1])
+
+    url = f"https://www.arxiv-vanity.com/papers/{paper_id:s}/"
 
     return dict(title=title.strip(),
                 authors=authors,
@@ -95,6 +79,86 @@ def collect_summary_information(paper_id: str,
                 url=url,
                 figures=figures,
                 soup=soup)
+
+
+def collect_summary_information(identifiers: Sequence[str],
+                                content_requirements: callable = None,
+                                wait: int = 10) -> Sequence[dict]:
+    """ Extract necessary information from the vanity webpage
+
+    :param identifers: list of arxiv identifiers to attempt to retrieve
+    :param content_requirement: filter function that returns False if the paper does not meet the requirements
+    :param wait: how many seconds to wait between retries.
+
+    :return: a dictionary with the following keys: (title, authors, abstract, paper_id, url, figures, and the soup object)
+    """
+
+    url = "https://www.arxiv-vanity.com/papers/{paper_id:s}/"
+
+    if not isinstance(identifiers, (list, tuple, set)):
+        return collect_summary_information([identifiers], content_requirements, wait)
+
+    # Queue all requests at once, giving vanity more time to process
+    print("starting all requests in the queue")
+    queue = [(paper_id, requests.get(url.format(paper_id=paper_id))) for paper_id in identifiers]
+    print("... requests sent.")
+    errors = {}
+    retrieved = {}
+
+
+    while ((len(errors) + len(retrieved)) < len(identifiers)):
+        for paper_id, response in queue:
+            # print(f"requesting status of {paper_id}")
+
+            # skip if already obtained
+            if paper_id in retrieved:
+                continue
+
+            try:
+                    response.raise_for_status()
+                    retrieved[paper_id] = response
+                    # print(f"{paper_id} retrieved")
+            except requests.exceptions.HTTPError as e:
+                    if 'This paper is rendering!' in response.content.decode():
+                        # print("We need to wait for the paper to be ready on Vanity... (remains in queue)\n", url)
+                        pass
+                    if "failed to render" in response.content.decode():
+                        errors[paper_id] = (paper_id, response, "Arxiv-Vanity failed to render the paper.")
+                        # raise HTTPError("Arxiv-Vanity failed to render the paper.")
+                    if "doesn't have LaTeX source code" in response.content.decode():
+                        errors[paper_id] = (response, "The paper does not have LaTeX source code.")
+                        # raise RuntimeError("The paper does not have LaTeX source code.")
+                    if "Service Unavailable" in e.response.reason:
+                        # print(paper_id, response, "Communication error. Will retry.")
+                        pass
+                    if "Internal Server Error" in e.response.reason:
+                        #print(paper_id, response, "Internal Server Error. Will retry.")
+                        pass
+                    if "Not Found" in e.response.reason:
+                        # print(paper_id, response, "Internal Server Error. Will retry.")
+                        pass
+                    else:
+                        errors[paper_id] = (response, e)
+                    #print(paper_id + ":" + str(errors.get(paper_id, None)))
+
+        print("Identifiers {0:,d}, Retrieved {1:,d} papers ({2:,d} generated errors)".format(len(identifiers), len(retrieved), len(errors)))
+        for count in reversed(range(1, wait)):
+                    print("Not all papers were ready. Retry in {0:02d} seconds...".format(count), end='\r', flush=True)
+
+                    time.sleep(1)
+        print("Not all papers were ready. Retrying...".format(count), end='\r', flush=True)
+    print("\ndone.\n", "Identifiers {0:,d}, Retrieved {1:,d} papers ({2:,d} generated errors)".format(len(identifiers), len(retrieved), len(errors)))
+
+    contents = []
+    for (paper_id, response) in retrieved.items():
+        try:
+            contents.append(_parse_response(paper_id, response, content_requirements))
+        except HTTPError as httpe:
+            print(f"Error with paper {paper_id}... ({httpe})")
+        except RuntimeError as re:
+            print(f"Not an MPIA paper {paper_id}... ({re})")
+
+    return contents
 
 
 def select_most_cited_figures(content: dict, N: int = 3) -> Sequence:
@@ -186,7 +250,7 @@ def generate_markdown_text(content: dict) -> str:
     selected_figures = select_most_cited_figures(content)
     text = f"""# {title}
 
-[![vanity](https://img.shields.io/badge/vanity-{paper_id}-f9f107.svg)]({url})
+[![vanity](https://img.shields.io/badge/vanity-{paper_id}-f9f107.svg)](https://www.arxiv-vanity.com/papers/{paper_id})
 [![arXiv](https://img.shields.io/badge/arXiv-{paper_id}-b31b1b.svg)](https://arxiv.org/abs/{paper_id})
 
 {authors}
