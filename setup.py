@@ -13,7 +13,7 @@ def readme():
     with open('README.md') as f:
         return f.read()
 
-package_name = "arxiv_vanity_on_deck"
+package_name = "arxiv_on_deck_2"
 
 setup(name = package_name,
     version = get_version(package_name),
@@ -21,7 +21,7 @@ setup(name = package_name,
     long_description = readme(),
     author = "Morgan Fouesneau",
     author_email = "",
-    url = "https://github.com/mfouesneau/arxiv_vanity_on_deck",
+    url = "https://github.com/mfouesneau/arxiv_on_deck_2",
     packages = find_packages(),
     package_data = {},
     include_package_data = True,
