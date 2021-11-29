@@ -13,13 +13,15 @@ Welcome to ArXiV on Deck 2's documentation!
 This package is the next version of `arxiv_on_deck <https://github.com/mfouesneau/arxiv_on_deck>`_,
 a quick and dirty version of the Arxiver.
 
-This evolution uses `arXiv Vanity <https://www.arxiv-vanity.com/>`_ that renders academic papers from arXiv as responsive web pages.
-
-This package searches for new articles on `ArXiv <https://arxiv.org/>`_ and renders their summary as Markdown documents.
-
 The main goal of this package is to find papers authored by a given list of authors (e.g., a list of institute members) and only for those compiles a 1 page summary with figures (and captions).
 
 It is a sort of Arxiver for institutes or groups
+
+This evolution initially uses `arXiv Vanity <https://www.arxiv-vanity.com/>`_ that renders academic papers from arXiv as responsive web pages.
+This package cannot entirely rely on `arXiv Vanity <https://www.arxiv-vanity.com/>`_ to render the documents correctly, and it is often having issues or incorrect rendering. Hence, it also implements latex parsing methods to extract information.
+
+This package searches for new articles on `ArXiv <https://arxiv.org/>`_ and renders their summary as Markdown documents.
+It does not compile the original LaTeX documents and only extracts the relevant information.
 
 Examples of results
 -------------------

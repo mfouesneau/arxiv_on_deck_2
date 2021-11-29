@@ -12,10 +12,11 @@ The main goal of this package is to find papers authored by a given list of auth
 It is a sort of Arxiver for institutes or groups
 
 This evolution initially uses [arXiv Vanity](https://www.arxiv-vanity.com/) that renders academic papers from arXiv as responsive web pages.
-This package cannot entirely relies on [arXiv Vanity](https://www.arxiv-vanity.com/) to correctly render the documents. It is often having issues or incorrect rendering. Hence, it also implements latex parsing methods to extract information.
+This package cannot entirely rely on [arXiv Vanity](https://www.arxiv-vanity.com/) to render the documents correctly, and it is often having issues or incorrect rendering. Hence, it also implements latex parsing methods to extract information.
 
 This package searches for new articles on [arXiv](https://arxiv.org/) and renders their summary as Markdown documents.
-It does not compile the original LaTeX documents and only extract the relevant information.
+It does not compile the original LaTeX documents and only extracts the relevant information.
+
 
 
 ## Examples
