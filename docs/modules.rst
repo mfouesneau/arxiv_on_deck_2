@@ -1,7 +1,7 @@
-arxiv_vanity_on_deck
-====================
+arxiv_on_deck_2
+===============
 
 .. toctree::
    :maxdepth: 4
 
-   arxiv_vanity_on_deck
+   arxiv_on_deck_2

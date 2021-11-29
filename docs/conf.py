@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'arxiv_vanity_on_deck'
+project = 'ArXiV on Deck 2'
 copyright = '2021, Morgan Fouesneau'
 author = 'Morgan Fouesneau'
 
