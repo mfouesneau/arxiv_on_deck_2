@@ -1,4 +1,5 @@
 from glob import glob
+import warnings
 import pathlib
 from typing import Union, Sequence
 import re
@@ -10,6 +11,24 @@ except ImportError:
 from pdf2image import convert_from_path
 # Requires poppler system library
 # !pip3 install pdf2image
+
+
+def _warning_on_one_line(message, category, filename, lineno, file=None, line=None) -> str:
+    """ Prints a complete warning that includes exactly the code line triggering it from the stack trace. """
+    return " {0:s}:{1:d} {2:s}:{3:s}".format(filename, lineno,
+                                             category.__name__, str(message))
+
+class LatexWarning(UserWarning):
+    pass
+
+
+# set default
+warnings.simplefilter('always', LatexWarning)
+
+
+def drop_none_from_list(list_: Sequence) -> Sequence:
+    """ Remove None from a list """
+    return [k for k in list_ if k is not None]
 
 
 def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
@@ -24,7 +43,7 @@ def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
     if (len(texfiles) == 1):
         return str(texfiles[0])
 
-    print('multiple tex files')
+    warnings.warn(LatexWarning('Multiple tex files.\n'), stacklevel=4)
     selected = None
     for e, fname in enumerate(texfiles):
         with open(fname, 'r', errors="surrogateescape") as finput:
@@ -32,8 +51,8 @@ def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
                 selected = e, fname
                 break
     if selected is not None:
-        print("Found main document in: ", selected[1])
-        print(e, fname)
+        warnings.warn(LatexWarning(
+            "Found documentclass in {0:s}\n".format(str(selected[1]))), stacklevel=4)
     else:
         raise RuntimeError('Could not locate the main document automatically.'
                            'Little help please!')
@@ -91,12 +110,14 @@ class LatexFigure(dict):
         """
         if (len(self['images']) > 1):
             width = 100 // len(self['images'])
+            num = self['num']
             current = ''.join(
                 [f'<img src="{figsub}" alt="Fig{num:d}.{sub:d}" width="{width}%"/>'
                  for sub, figsub in enumerate(self['images'], 1)]
             )
         else:
-            current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
+            # current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
+            current = '<img src="{image}" alt="Fig{num:d}" width="100%"/>'.format(num=self['num'], image=self['images'][0])
 
         return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(current=current, **self)
 
@@ -123,7 +144,7 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
     return selected_figures
 
 
-def clear_latex_comments(data: str):
+def clear_latex_comments(data: str) -> str:
     """ clean text from any comment
 
     :param data: text to clean
@@ -137,6 +158,61 @@ def clear_latex_comments(data: str):
         except IndexError:
             lines.append(line)
     return '\n'.join(lines)
+
+
+def fix_def_command(text: str) -> str:
+    ''' Fixing a small bug in TexSoup that \def\name{}
+
+    This function parses the text to add braces if needed
+    \def\name{} --> \def{\name}{}
+
+    https://github.com/alvinwan/TexSoup/issues/131
+    '''
+    search_def_gdef = re.compile(r'(\\.{0,1}def)(.[\w]*)({.*})')
+    try:
+        pre, name, content = search_def_gdef.findall(text)[0]
+        if name.startswith('{') or name.startswith('\\'):
+            if name.startswith('{') and name.endswith('}'):
+                text_ = ''.join([pre, name, content])
+            else:
+                text_ = ''.join([pre, '{', name, '}', content])
+            return text_
+        else:
+            return text
+    except IndexError:
+        return text
+
+def get_macros_names(macros: Sequence[str]) -> Sequence[str]:
+    """ return a list of names from the macros newcommand definitions """
+
+    def ignore_error(func, extype=Exception):
+        """ run func catching exceptions to ignore """
+        def deco(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except extype:
+                pass
+        return deco
+
+    def get_name(node):
+        """Get the macro name"""
+        return node.newcommand.args[0].contents[0].name
+
+    res = [ignore_error(TexSoup)(k) for k in macros]
+
+    return drop_none_from_list(
+        [ignore_error(get_name)(mk) for mk in res if mk ])
+
+
+def force_macros_mathmode(text: str, macros: Sequence[str]) -> str:
+    """ Make sure that detected macros are in math mode. They sometimes are not"""
+    if macros is None:
+        return text
+    macros_names = get_macros_names(macros)
+    text_ = text[:]
+    for mk in macros_names:
+        text_ = re.compile(r'(?:(?<=[^$]))\\' + mk).sub(r'$\\' + mk + '$', text_)
+    return text_
 
 class LatexDocument:
     """ Handles the latex document interface.
@@ -159,10 +235,12 @@ class LatexDocument:
         self._title = None
         self._authors = None
         self.comment = None
+        self.macros = None
 
         with open(self.main_file, 'r') as fin:
             main_tex = fin.read()
         self.content = TexSoup(self._clean_source(main_tex))
+        self.macros = self.retrieve_latex_macros()
 
     def _clean_source(self, source: str) -> str:
         """ Clean the source of the document
@@ -171,11 +249,51 @@ class LatexDocument:
         :return: cleaned source
         """
         import re
-        source = clear_latex_comments(source).replace('$$', '$ $')
+        source = clear_latex_comments(source).replace('$$', '$')
+        self.source = source[:]
+        source = '\n'.join([fix_def_command(k) for k in source.splitlines() if k])
         source = re.sub('\s+', ' ', source)
         source = re.sub('\n+', '\n', source)
         source = re.sub('\s+\n', '\n', source)
+        source = re.sub(r'{}', ' ', source)   #empty commands
+        # often missing spaces around $.
+        source = re.sub(r'(?<=[^\$])\$(?=[^\$])', ' $ ', source)
+        # \\s used to force spaces.
+        source = re.sub(r'\\\s', ' ', source)
         return source
+
+    def retrieve_latex_macros(self) -> Sequence[str]:
+        """Get the macros defined in the document """
+
+        keys = (r'providecommand', r'command', r'newcommand',
+                r'renewcommand', r'def', r'gdef')
+
+        identified_macros = []
+        for command_k in keys:
+            identified_macros.append('\n'.join(map(str, self.content.find_all(command_k))))
+
+        macros = '\n'.join(identified_macros)\
+                    .replace('provide', 'new')\
+                    .replace('gdef', 'newcommand')\
+                    .replace('def', 'newcommand')\
+                    .replace('renewcommand', 'newcommand')\
+                    .replace(' $ ', '')\
+                    .replace('$', '')
+
+        # some may be important to bypass
+        required_macros = '\n'.join(
+            [r'$\newcommand{\ensuremath}{}$',
+             r'$\newcommand{\xspace}{}$',
+             r'$\newcommand{\object}[1]{\texttt{#1}}$',
+             r"$\newcommand{\farcs}{{.}''}$",
+             r"$\newcommand{\farcm}{{.}'}$",
+             r"$\newcommand{\arcsec}{''}$",
+             r"$\newcommand{\arcmin}{'}$",
+            ])
+
+        macros_text = '\n'.join(['$' + k + '$' for k in macros.splitlines() if k])
+
+        return (required_macros + '\n' + macros_text).splitlines()
 
     def get_all_figures(self) -> Sequence[LatexFigure]:
         """ Retrieve all figures (num, images, caption, label) from a document
@@ -183,14 +301,40 @@ class LatexDocument:
         :param content: the document content
         :return: sequence of LatexFigure objects
         """
-        figures = self.content.find_all('figure')
+        figures = self.content.find_all('figure') + self.content.find_all('figure*')
         folder = self.folder
         data = []
         for num, fig in enumerate(figures, 1):
             num = num
             images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
-            caption = [''.join(k.text) for k in fig.find_all('caption')][0].replace('~', ' ')
-            label = [''.join(k.text) for k in fig.find_all('label')][0]
+            try:
+                caps = fig.find_all('caption')
+                caption = []
+                for cap in caps:
+                    captxt = ''.join(map(str, cap.contents))
+                    """
+                    textbf = [''.join(str(k)) for k in cap.find_all('textbf')]
+                    for key in textbf:
+                        try:
+                            captxt = re.sub(r"\\textbf\{" + re.escape(key) + r"\}", f"**{key:s}**", captxt)
+                        except:
+                            pass
+                    textit = [''.join(str(k)) for k in cap.find_all('textit')]
+                    for key in textbf:
+                        try:
+                            captxt = re.sub(r"\\textit\{" + re.escape(key) + r"\}", f"_{key:s}_", captxt)
+                        except:
+                            pass
+                    """
+                    caption.append(captxt)
+                caption = ''.join(caption).replace('~', ' ')
+            except IndexError:
+                # Sometimes no captions (multipage figures)
+                caption = "- Incorrectly specified caption -"
+            try:
+                label = [''.join(k.text) for k in fig.find_all('label')][0]
+            except IndexError:
+                label = ''
             fig = LatexFigure(num=num, images=images, caption=caption, label=label)
             data.append(fig)
         return data
@@ -236,12 +380,22 @@ class LatexDocument:
     def get_authors(self) -> Sequence[str]:
         """ Get list of authors """
         authors = []
-        for k in self.content.find_all('author')[0]:
-            if str(k)[0] != '\\':
-                authors.append(str(k)\
-                                .replace('~', ' ')\
-                                .replace(',', '')\
-                                .strip())
+        author_decl = self.content.find_all('author')
+        # parsing multi-author commands (new journal styles)
+        if len(author_decl) > 1:
+            orcid_search = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
+            for ak in author_decl:
+                if orcid_search.search(ak[0]):
+                    authors.append(''.join(ak[1:]))
+                else:
+                    authors.append(''.join(ak))
+        else:
+            # The following is buggy: does not work for \author{name affil, name2 affil2, ...}
+            for k in author_decl[0]:
+                if str(k)[0] != '\\':
+                    authors.append(str(k).replace('~', ' ')\
+                                         .replace(',', '')\
+                                         .strip())
         return authors
 
     @property
@@ -297,7 +451,23 @@ class LatexDocument:
                 new_authors.append(f"{author}")
         self._authors = new_authors
 
-    def generate_markdown_text(self, with_figures:bool =True) -> str:
+    def get_macros_markdown_text(self, show_errors: bool = False) -> str:
+        """ Construct the Markdown object of the macros """
+        macros_text = '\n'.join(self.macros)
+        if show_errors:
+            macros_text = (
+                '<div class="macros" style="background:yellow;visibility:visible;">\n' +
+                macros_text +
+                '</div>')
+        else:
+            macros_text = (
+                '<div class="macros" style="visibility:hidden;">\n' +
+                macros_text +
+                '</div>')
+
+        return macros_text
+
+    def generate_markdown_text(self, with_figures:bool = True) -> str:
         """ Generate the markdown summary
 
         :param with_figures: if True, the figures are included in the summary
@@ -314,10 +484,16 @@ class LatexDocument:
 
         text = f"""# {latex_title}\n\n {joined_latex_authors} \n\n **Abstract:** {latex_abstract}"""
         if with_figures:
-            figures = '\n'.join([k.generate_markdown_text().replace('|---------|\n', '')
-                                 for k in selected_latex_figures])
-            return text + '\n' + figures
-        return text
+            figures = [k.generate_markdown_text().replace('|---------|\n', '')
+                       for k in selected_latex_figures]
+            # encapsulate into divs
+            figures_ = []
+            for (e, fk) in enumerate(figures, 1):
+                figures_.extend([f'<div id="fig{e:d}">\n', fk, '\n</div>'])
+            figures_ = '\n'.join(figures_)
+            text = text + '\n' + figures_
+        macros_md = self.get_macros_markdown_text() + '\n\n'
+        return  macros_md + force_macros_mathmode(text, self.macros)
 
     def _repr_markdown_(self):
         if Markdown is None:
