@@ -258,8 +258,9 @@ class LatexDocument:
         source = re.sub(r'{}', ' ', source)   #empty commands
         # often missing spaces around $.
         source = re.sub(r'(?<=[^\$])\$(?=[^\$])', ' $ ', source)
-        # \\s used to force spaces.
+        # \\s and \\, used to force spaces.
         source = re.sub(r'\\\s', ' ', source)
+        source = re.sub(r'\\,', ' ', source)
         return source
 
     def retrieve_latex_macros(self) -> Sequence[str]:
