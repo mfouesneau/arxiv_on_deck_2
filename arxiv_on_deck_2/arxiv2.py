@@ -168,12 +168,12 @@ def retrieve_document_source(identifier: str, directory: str) -> str:
     :return: directory in which the data was extracted
     """
     where = f"https://arxiv.org/e-print/{identifier}"
-    print(where)
+    print("Retrieving document from ", where)
     tar = tarfile.open(mode='r|gz', fileobj=urlopen(where))
 
     if os.path.isdir(directory):
         shutil.rmtree(directory)
-    print("extracting tarball...", end='')
+    print(f"extracting tarball to {directory:s}...", end='')
     tar.extractall(directory)
     print(" done.")
     return directory
