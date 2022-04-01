@@ -1,3 +1,4 @@
+import os
 from glob import glob
 import warnings
 import pathlib
@@ -78,6 +79,34 @@ def convert_pdf_to_image(fname: str) -> str:
         return f'{rootname}.png'
 
 
+def open_eps(filename, dpi=300.0):
+    from PIL import Image
+    # from PIL import EpsImagePlugin
+    import math
+    img = Image.open(filename)
+    original = [float(d) for d in img.size]
+    # scale = width / original[0] # calculated wrong height
+    scale = dpi / 72.0            # this fixed it
+    if dpi > 0:
+        img.load(scale = math.ceil(scale))
+    if scale != 1:
+        img.thumbnail([round(scale * d) for d in original], Image.ANTIALIAS)
+    return img
+
+
+def convert_eps_to_image(fname: str) -> str:
+    """ Convert image from EPS to png.
+
+    The new image is stored with the original one
+
+    :param fname: file to potentially convert
+    """
+    from PIL import Image
+    rootname = fname.replace('.eps', '')
+    open_eps(fname, dpi=500).save(f'{rootname}.png', format='PNG', dpi=[500, 500])
+    return f'{rootname}.png'
+
+
 class LatexFigure(dict):
     """ Representation of a figure from a LatexDocument
 
@@ -90,15 +119,17 @@ class LatexFigure(dict):
     """
     def __init__(self, **data):
         super().__init__(data)
-        self._check_pdf_figure()
+        self._check_eps_pdf_figure()
 
-    def _check_pdf_figure(self):
+    def _check_eps_pdf_figure(self):
         """ Check if PDF images and convert to PNG if needed """
         images = self['images']
         new_images = []
         for image in images:
             if image[-4:] == '.pdf':
                 new_images.append(convert_pdf_to_image(image))
+            elif image[-4:] == '.eps':
+                new_images.append(convert_eps_to_image(image))
             else:
                 new_images.append(image)
         self['images'] = new_images
@@ -214,6 +245,58 @@ def force_macros_mathmode(text: str, macros: Sequence[str]) -> str:
         text_ = re.compile(r'(?:(?<=[^$]))\\' + mk).sub(r'$\\' + mk + '$', text_)
     return text_
 
+
+def inject_other_sources(maintex:str ,
+                         texfiles: Sequence[str],
+                         verbose: bool = False):
+    """ replace input and include commands by the content of the sub-files """
+
+    # find all include and input commands
+    include_regex = re.compile(r'(?:(?<=[^$]))\\(?:input|include)\{(.*?)\}')
+    externals = include_regex.finditer(maintex)
+
+    # the following matches the full filenames without extensions
+    for match in externals:
+        ext = match.group(1)
+        ext_ = os.path.splitext(os.path.basename(ext))[0]
+        for subsource in texfiles:
+            sub_ = os.path.splitext(os.path.basename(subsource))[0]
+            if ext_ == sub_:
+                if verbose:
+                    warnings.warn(LatexWarning(f"Latex injecting: '{ext}' from '{subsource}'"))
+                with open(subsource, 'r') as fsub:
+                    subtext = fsub.read()
+                s, e = match.span()
+                maintex = ''.join([
+                    maintex[:s],
+                    '% ', maintex[s: e], ' % -- REPLACED BY LATEX INJECTION -- \n',
+                    subtext,
+                    maintex[e:]])
+    return maintex
+
+
+def get_content(source, flexible=True, current_attempt=0, max_attempt=10) -> str:
+    """ get soup to parse the source and try to recover if something goes wrong.
+
+    As we do not need the exact text throughout the paper, we can try to isolate potential error sections.
+    The following attempts to remove the line that triggers an error.
+    """
+    try:
+        return TexSoup(source)
+    except TypeError as e:
+        if not flexible:
+            raise e
+        error = e
+        offset = int(re.findall(r'\[.*, Offset ([0-9]*)\]', str(error))[0])
+        error_at_line = source[:offset].count('\n')
+        warnings.warn(LatexWarning(f"error at line {error_at_line:,d}"))
+        newsource = source.splitlines()
+        newsource = newsource[:error_at_line] + newsource[error_at_line + 1:]
+        return get_content('\n'.join(newsource),
+                           flexible=current_attempt < max_attempt,
+                           current_attempt= current_attempt + 1,
+                           max_attempt=max_attempt)
+
 class LatexDocument:
     """ Handles the latex document interface.
 
@@ -227,7 +310,7 @@ class LatexDocument:
     :param comments: the comments of the paper
     :param abstract: the abstract of the paper
     """
-    def __init__(self, folder: str):
+    def __init__(self, folder: str, validation: callable = None):
         self.main_file = find_main_doc(folder)
         self.folder = folder
         self._figures = None
@@ -239,8 +322,20 @@ class LatexDocument:
 
         with open(self.main_file, 'r') as fin:
             main_tex = fin.read()
-        self.content = TexSoup(self._clean_source(main_tex))
+        source = self._clean_source(main_tex)
+        source = inject_other_sources(source, self.get_texfiles(), verbose=True)
+        if validation is not None:
+            validation(source)
+        # self.content = TexSoup(source)
+        self.content = get_content(source)
         self.macros = self.retrieve_latex_macros()
+        self.source = source
+
+
+    def get_texfiles(self):
+        """ returns all tex files in the folder (and subfolders) """
+        folder = self.folder
+        return [str(k) for k in pathlib.Path(f"{folder}").glob("**/*.tex")]
 
     def _clean_source(self, source: str) -> str:
         """ Clean the source of the document
@@ -252,10 +347,10 @@ class LatexDocument:
         source = clear_latex_comments(source).replace('$$', '$')
         self.source = source[:]
         source = '\n'.join([fix_def_command(k) for k in source.splitlines() if k])
-        source = re.sub('\s+', ' ', source)
-        source = re.sub('\n+', '\n', source)
-        source = re.sub('\s+\n', '\n', source)
-        source = re.sub(r'{}', ' ', source)   #empty commands
+        # source = re.sub(r'\s\s+', ' ', source)
+        source = re.sub(r'\n\n+', r'\n', source)
+        source = re.sub(r'\s+\n', r'\n', source)
+        source = re.sub(r'\{\}', ' ', source)   #empty commands
         # often missing spaces around $.
         source = re.sub(r'(?<=[^\$])\$(?=[^\$])', ' $ ', source)
         # \\s and \\, used to force spaces.
@@ -306,7 +401,7 @@ class LatexDocument:
         folder = self.folder
         data = []
         for num, fig in enumerate(figures, 1):
-            num = num
+            # num = num
             images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
             try:
                 caps = fig.find_all('caption')
@@ -384,12 +479,13 @@ class LatexDocument:
         author_decl = self.content.find_all('author')
         # parsing multi-author commands (new journal styles)
         if len(author_decl) > 1:
-            orcid_search = re.compile('[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}')
+            orcid_search = re.compile('[0-9X]{4}-[0-9X]{4}-[0-9X]{4}-[0-9X]{4}')
             for ak in author_decl:
                 if orcid_search.search(ak[0]):
                     authors.append(''.join(ak[1:]))
                 else:
-                    authors.append(''.join(ak))
+                    authors.append(''.join(ak.string))
+
         else:
             # The following is buggy: does not work for \author{name affil, name2 affil2, ...}
             for k in author_decl[0]:
