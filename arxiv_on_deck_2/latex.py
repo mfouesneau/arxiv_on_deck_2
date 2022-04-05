@@ -107,6 +107,14 @@ def convert_eps_to_image(fname: str) -> str:
     return f'{rootname}.png'
 
 
+def find_graphics(where, image, folder=''):
+    """ Find graphics files for the figure if graphicspath provided """
+    for wk in where:
+        fname = os.path.join(folder, wk, image)
+        if os.path.exists(fname):
+            return fname
+    raise FileNotFoundError(f"Could not find figure {image}")
+
 class LatexFigure(dict):
     """ Representation of a figure from a LatexDocument
 
@@ -120,6 +128,14 @@ class LatexFigure(dict):
     def __init__(self, **data):
         super().__init__(data)
         self._check_eps_pdf_figure()
+
+    def _check_images_path(self):
+        """ Check if images are in the same folder as the document """
+        images = self['images']
+        if len(images) > 1:
+            for image in images:
+                if not os.path.exists(image):
+                    raise FileNotFoundError(f"Could not find figure {image}")
 
     def _check_eps_pdf_figure(self):
         """ Check if PDF images and convert to PNG if needed """
@@ -282,14 +298,24 @@ def get_content(source, flexible=True, current_attempt=0, max_attempt=10) -> str
     The following attempts to remove the line that triggers an error.
     """
     try:
-        return TexSoup(source)
+        return TexSoup(source, tolerance=int(flexible))
+    except EOFError as error:
+        # End of document error. split around the offending line and try again
+        if (current_attempt >= max_attempt) or not flexible:
+            raise error
+        offset = int(re.findall(r'\[.* Off.* ([0-9]*)\]', str(error))[0])
+        newsource = source.splitlines()
+        a = TexSoup('\n'.join(newsource[:64]) + '\n\end{document}')
+        b = TexSoup('\n'.join(newsource[65:]))  # no need to begin{document}
+        a.append(*b)
+        return a
     except TypeError as e:
-        if not flexible:
-            raise e
         error = e
-        offset = int(re.findall(r'\[.*, Offset ([0-9]*)\]', str(error))[0])
+        offset = int(re.findall(r'\[.* Off.* ([0-9]*)\]', str(error))[0])
         error_at_line = source[:offset].count('\n')
         warnings.warn(LatexWarning(f"error at line {error_at_line:,d}"))
+        if not flexible:
+            raise e
         newsource = source.splitlines()
         newsource = newsource[:error_at_line] + newsource[error_at_line + 1:]
         return get_content('\n'.join(newsource),
@@ -319,18 +345,29 @@ class LatexDocument:
         self._authors = None
         self.comment = None
         self.macros = None
+        self.graphicspath = None
 
         with open(self.main_file, 'r') as fin:
-            main_tex = fin.read()
-        source = self._clean_source(main_tex)
+            source = fin.read()
         source = inject_other_sources(source, self.get_texfiles(), verbose=True)
         if validation is not None:
             validation(source)
+        source = self._clean_source(source)
         # self.content = TexSoup(source)
         self.content = get_content(source)
         self.macros = self.retrieve_latex_macros()
+        self.graphicspath = self.get_graphicspath()
         self.source = source
 
+    def get_graphicspath(self) -> Sequence[str]:
+        """Retrieve the graphicspath if declared"""
+        # list of directories in {}
+        try:
+            where = [str(k.string) for k in self.content.find_all('graphicspath')[0].contents]
+        except:
+            where = ['./']
+
+        return [os.path.join(self.folder, k) for k in where]
 
     def get_texfiles(self):
         """ returns all tex files in the folder (and subfolders) """
@@ -344,18 +381,51 @@ class LatexDocument:
         :return: cleaned source
         """
         import re
-        source = clear_latex_comments(source).replace('$$', '$')
-        self.source = source[:]
+        source = clear_latex_comments(source).replace('$$', '')\
+                                             .replace('``', '"')\
+                                             .replace("''", '"')
         source = '\n'.join([fix_def_command(k) for k in source.splitlines() if k])
+        source = re.sub(r'\$\$', r'', source)
         # source = re.sub(r'\s\s+', ' ', source)
         source = re.sub(r'\n\n+', r'\n', source)
+        # source = re.sub(r'\n+', r'\n', source)
         source = re.sub(r'\s+\n', r'\n', source)
         source = re.sub(r'\{\}', ' ', source)   #empty commands
+        # some people play with $$ within equations...
+        # replace by \[ ... \] and remove isolated $$
+        # source = re.sub(r'(?P<env>(\${2}))(.*)(?P=env)', r'\\[\g<3>\\]', source)
+
+        # source = re.sub(r'(?<!(\s|\^))\$\$(?!(\s|$))', '', source)
         # often missing spaces around $.
-        source = re.sub(r'(?<=[^\$])\$(?=[^\$])', ' $ ', source)
+        # source = re.sub(r'(?<=[^\$])\$(?=[^\$])', ' $ ', source)
         # \\s and \\, used to force spaces.
         source = re.sub(r'\\\s', ' ', source)
         source = re.sub(r'\\,', ' ', source)
+        # some varied graphics commands that should die.
+        source = re.sub(r'\\plotone\{(.*)\}', r'\\includegraphics{\g<1>}', source)
+        source = re.sub(r'\\plottwo\{(.*)\}\{(.*)\}', r'\\includegraphics{\g<1>}\\includegraphics{\g<2>}', source)
+
+        # special characters
+        which = [
+            (r'\\~{n}', r'ñ'),
+            (r'\\~{o}', r'õ'),
+            (r'\\~{a}', r'ã'),
+            (r"\\`{a}", r'à'),
+            (r"\\`{e}", r'è'),
+            (r"\\`{i}", r'ì'),
+            (r"\\`{o}", r'ò'),
+            (r"\\`{u}", r'ù'),
+            (r"\\'{a}", r'á'),
+            (r"\\'{e}", r'é'),
+            (r"\\'{i}", r'í'),
+            (r"\\'{o}", r'ó'),
+            (r"\\'{u}", r'ú'),
+
+        ]
+        for from_, to_ in which:
+            source = re.sub(from_, to_, source)
+            source = re.sub(r'\\~{n}', r'ñ', source)
+        self.source = source
         return source
 
     def retrieve_latex_macros(self) -> Sequence[str]:
@@ -385,6 +455,7 @@ class LatexDocument:
              r"$\newcommand{\farcm}{{.}'}$",
              r"$\newcommand{\arcsec}{''}$",
              r"$\newcommand{\arcmin}{'}$",
+             r"$\newcommand{\ion}[2]{#1#2}$",
             ])
 
         macros_text = '\n'.join(['$' + k + '$' for k in macros.splitlines() if k])
@@ -402,26 +473,14 @@ class LatexDocument:
         data = []
         for num, fig in enumerate(figures, 1):
             # num = num
-            images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
+            # images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
+            images = [find_graphics(self.graphicspath, k.text[-1])
+                      for k in fig.find_all('includegraphics')]
             try:
                 caps = fig.find_all('caption')
                 caption = []
                 for cap in caps:
                     captxt = ''.join(map(str, cap.contents))
-                    """
-                    textbf = [''.join(str(k)) for k in cap.find_all('textbf')]
-                    for key in textbf:
-                        try:
-                            captxt = re.sub(r"\\textbf\{" + re.escape(key) + r"\}", f"**{key:s}**", captxt)
-                        except:
-                            pass
-                    textit = [''.join(str(k)) for k in cap.find_all('textit')]
-                    for key in textbf:
-                        try:
-                            captxt = re.sub(r"\\textit\{" + re.escape(key) + r"\}", f"_{key:s}_", captxt)
-                        except:
-                            pass
-                    """
                     caption.append(captxt)
                 caption = ''.join(caption).replace('~', ' ')
             except IndexError:
@@ -482,7 +541,7 @@ class LatexDocument:
             orcid_search = re.compile('[0-9X]{4}-[0-9X]{4}-[0-9X]{4}-[0-9X]{4}')
             for ak in author_decl:
                 if orcid_search.search(ak[0]):
-                    authors.append(''.join(ak[1:]))
+                    authors.append(''.join(map(str, ak.contents[1:])))
                 else:
                     authors.append(''.join(ak.string))
 
