@@ -52,6 +52,7 @@ def get_special_corrections(initials_name:str) -> str:
     # non-generic cases
     collected = {
     'S. R. Khoshbakht': 'S. Rezaei Kh.',
+    'E. B. Torres': 'E. Bañados',
     }
 
     try:
