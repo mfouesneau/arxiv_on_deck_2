@@ -20,7 +20,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    steps:  
+    steps:
     - uses: actions/checkout@v2
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
@@ -29,8 +29,15 @@ jobs:
     #   uses: mxschmitt/action-tmate@v3
     - uses: ammaraskar/sphinx-action@master
       with:
+        pre-build-command: |
+            python -m pip install -r requirements.txt
+            python -m pip install -r docs/requirements.txt
+            python -m pip show markupsafe
+            # clear previous API documentation
+            rm -f arxiv_on_deck_2.rst arxiv_on_deck_2.*.rst
+            # re-generate API documentation
+            make apidoc
         docs-folder: "docs/"
-        pre-build-command: pip install -r requirements.txt
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes

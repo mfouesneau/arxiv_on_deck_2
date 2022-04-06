@@ -23,6 +23,15 @@ This package cannot entirely rely on `arXiv Vanity <https://www.arxiv-vanity.com
 This package searches for new articles on `ArXiv <https://arxiv.org/>`_ and renders their summary as Markdown documents.
 It does not compile the original LaTeX documents and only extracts the relevant information.
 
+Rendering details
+-----------------
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+
+   fromlatex
+
 Examples of results
 -------------------
 
@@ -31,6 +40,7 @@ Examples of results
    :caption: papers:
    :glob:
 
+   fromlatex
    examples/*
 
 
@@ -42,14 +52,13 @@ Examples
    :alt: nbviewer
 
 
-
 Contents
 ---------
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   arxiv_on_deck_2
+   modules
 
 
 Indices and tables
