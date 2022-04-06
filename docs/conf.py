@@ -55,9 +55,8 @@ extensions = [
         "sphinx.ext.mathjax",
         "sphinx.ext.todo",
         "sphinx.ext.viewcode",
-        # "sphinx_autodoc_annotation",
+        "sphinx_autodoc_annotation",
         "myst_parser",
-        # "myst_nb",
 ]
 
 myst_enable_extensions = ["dollarmath", "colon_fence"]
@@ -75,6 +74,7 @@ source_suffix = {
     '.rst': 'restructuredtext',
     '.txt': 'markdown',
     '.md': 'markdown',
+    '.ipynb': 'myst',
 }
 
 # The master toctree document.

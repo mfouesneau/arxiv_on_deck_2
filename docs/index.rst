@@ -40,25 +40,15 @@ Examples of results
    :caption: papers:
    :glob:
 
-   fromlatex
    examples/*
-
-
-Examples
---------
-
-.. image:: https://img.shields.io/badge/render%20on-nbviewer-orange.svg
-   :target: https://nbviewer.org/github/mfouesneau/arxiv_on_deck_2/blob/main/examples/notebook.ipynb
-   :alt: nbviewer
 
 
 Contents
 ---------
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   modules
+   arxiv_on_deck_2
 
 
 Indices and tables
