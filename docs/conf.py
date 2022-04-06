@@ -74,7 +74,7 @@ source_suffix = {
     '.rst': 'restructuredtext',
     '.txt': 'markdown',
     '.md': 'markdown',
-    '.ipynb': 'myst',
+    # '.ipynb': 'myst',
 }
 
 # The master toctree document.
