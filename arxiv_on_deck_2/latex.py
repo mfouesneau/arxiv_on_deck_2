@@ -270,7 +270,8 @@ def inject_other_sources(maintex:str ,
 
     # find all include and input commands
     include_regex = re.compile(r'(?:(?<=[^$]))\\(?:input|include)\{(.*?)\}')
-    externals = include_regex.finditer(maintex)
+    # important to start from the end to avoid breaking the span indices
+    externals = reversed(list(include_regex.finditer(maintex)))
 
     # the following matches the full filenames without extensions
     for match in externals:
@@ -310,7 +311,6 @@ def get_content_per_section(source: str, flexible:bool = True, verbose: bool = T
                 [(g.span()[0], g.span()[1], g.group()) for g in re.finditer(r'\\begin\{appendix\}', source)] +
                 [(len(source), len(source), 'end')]
             )
-
 
     sections = sorted(sections, key=lambda x: x[0])
 
