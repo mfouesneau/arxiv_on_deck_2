@@ -704,7 +704,7 @@ class LatexDocument:
         if self.comment:
             text += f"""<div id="comments">\n\n{self.comment:s}\n\n</div>\n"""
         text += f"""<div id="authors">\n\n{joined_latex_authors:s}\n\n</div>\n"""
-        text += f"""<div id="abstract">\n\n**Abstract:**{latex_abstract:s}\n\n</div>\n"""
+        text += f"""<div id="abstract">\n\n**Abstract:** {latex_abstract:s}\n\n</div>\n"""
 
         if with_figures:
             figures = [k.generate_markdown_text().replace('|---------|\n', '')
@@ -712,7 +712,7 @@ class LatexDocument:
             # encapsulate into divs
             figures_ = []
             for (e, fk) in enumerate(figures, 1):
-                figures_.extend([f'<div id="fig{e:d}">\n', fk, '\n</div>'])
+                figures_.extend([f'<div id="div_fig{e:d}">\n', fk, '\n</div>'])
             figures_ = '\n'.join(figures_)
             text = text + '\n' + figures_
         return  macros_md + force_macros_mathmode(text, self.macros)
