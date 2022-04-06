@@ -40,7 +40,6 @@ Examples of results
    :caption: papers:
    :glob:
 
-   mpia_digest
    examples/*
 
 

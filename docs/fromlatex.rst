@@ -294,3 +294,62 @@ see :func:`arxiv_on_deck_2.latex.get_macros_markdown_text`.
 
 Layout
 ~~~~~~
+
+The layout is basic from the Markdown source. To help potentially more complex presentation,
+we add HTML div to the document. Below is what a document looks like:
+
+.. code-block:: text
+
+    <div class="macros" style="visibility:hidden;">
+    $\newcommand{\ensuremath}{}$
+    $\newcommand{\xspace}{}$
+    $\newcommand{\object}[1]{\texttt{#1}}$
+    </div>
+
+    <div id="title">
+
+    # Title
+
+    </div>
+
+    <div id="comments">
+
+    [![arXiv](https://img.shields.io/badge/arXiv-<paper_id>-b31b1b.svg)](https://arxiv.org/abs/<paper_id>) _Some comments_
+
+    </div>
+
+    <div id="authors">
+
+    first author, et al. -- incl., <mark>highlighted author</mark>
+
+    </div>
+
+    <div id="abstract">
+
+    **Abstract:** The abstract of the text.
+
+    </div>
+
+    <div id="div_fig1">
+
+    <img src="tmp_<paper_id>/figname9a.png" alt="Fig9.1" width="50%"/><img src="tmp_<paper_id>/figname9b.png" alt="Fig9.2" width="50%"/>
+
+    **Figure 9. -** Caption of the two panel figure 9.
+
+    </div>
+    <div id="div_fig2">
+
+    <img src="tmp_<paper_id>/fig3.png" alt="Fig3" width="100%"/>
+
+    **Figure 3. -** Caption of Fig 3.
+
+    </div>
+    <div id="div_fig3">
+
+    <img src="tmp_<paper_id>/fig10.png" alt="Fig10" width="100%"/>
+
+    **Figure 10. -** Caption of Fig 10.
+
+    </div>
+
+Thanks to these divisions (`<div>`) one can change the CSS properties to render the summary as they prefer.
