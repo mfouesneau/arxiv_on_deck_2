@@ -1,2 +1,0 @@
-Rendering from Latex source
-==========================
