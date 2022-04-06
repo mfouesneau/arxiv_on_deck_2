@@ -208,12 +208,13 @@ def clear_latex_comments(data: str) -> str:
 
 
 def fix_def_command(text: str) -> str:
-    ''' Fixing a small bug in TexSoup that \def\name{}
+    r''' Fixing a small bug in TexSoup that \def\name{}
 
     This function parses the text to add braces if needed
     \def\name{} --> \def{\name}{}
 
     https://github.com/alvinwan/TexSoup/issues/131
+
     '''
     search_def_gdef = re.compile(r'(\\.{0,1}def)(.[\w]*)({.*})')
     try:
@@ -520,7 +521,7 @@ class LatexDocument:
         """ Extract document's title """
         title = ''.join(self.content.find_all('title')[0].text)
         try:
-            subtitle = ''.join(r.find_all('subtitle')[0].text)
+            subtitle = ''.join(self.content.find_all('subtitle')[0].text)
             return ': '.join([title, subtitle])
         except:
             return title
