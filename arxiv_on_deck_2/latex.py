@@ -4,7 +4,7 @@ import warnings
 import pathlib
 from typing import Union, Sequence
 import re
-from TexSoup import TexSoup
+from TexSoup import TexSoup, TexNode
 try:
     from IPython.display import Markdown
 except ImportError:
@@ -292,7 +292,61 @@ def inject_other_sources(maintex:str ,
     return maintex
 
 
-def get_content(source, flexible=True, current_attempt=0, max_attempt=10) -> str:
+def get_content_per_section(source: str, flexible:bool = True, verbose: bool = True) -> Sequence:
+    """ Find problematic portions of the document and attempt to skip them """
+    import re
+    from itertools import chain
+
+    # Checking header
+    begin_doc = next(re.finditer(r'\\begin\{document\}', source)).span()[1]
+
+    # Check the text per section until the end.
+    # Do not stop and try them all.
+
+    problematic_text = []
+
+    sections = ([(0, begin_doc, 'header')] +
+                [(g.span()[0], g.span()[1], g.group()) for g in re.finditer(r'\\section\{.*\}', source)] +
+                [(g.span()[0], g.span()[1], g.group()) for g in re.finditer(r'\\begin\{appendix\}', source)] +
+                [(len(source), len(source), 'end')]
+            )
+
+
+    sections = sorted(sections, key=lambda x: x[0])
+
+    prev_pos, prev_name = (0, 'header')
+    parsed = []
+
+    for span, span_end, name in sections:
+        if span - prev_pos <= 0:
+            continue
+        text = source[prev_pos:span]
+        if prev_pos > begin_doc:
+            text = r"\n\begin{document}" + text + r"\n\end{document}"
+        else:
+            text = text + r"\n\end{document}"
+        try:
+            parsed.append(TexSoup(text, tolerance=int(flexible)))  # allow not ending env
+            if verbose:
+                print(f"✔ → {prev_pos}:{prev_name}\n  ↳ {span}:{name}")
+
+            prev_pos = span
+            prev_name = name
+        except:
+            if verbose:
+                print(f"✘ → {prev_pos}:{prev_name}\n  ↳ {span}:{name}")
+            problematic_text.append((prev_pos, source[prev_pos:span]))
+            prev_pos = span
+            prev_name = name
+
+    final = parsed[0]
+    final.append(*list(chain(*[bk.expr._contents for bk in parsed[1:]])))
+    return final, parsed, problematic_text
+
+
+
+def get_content(source: str, flexible:bool = True, verbose:bool = False) -> TexNode:
+    # flexible=True, current_attempt=0, max_attempt=10) -> str:
     """ get soup to parse the source and try to recover if something goes wrong.
 
     As we do not need the exact text throughout the paper, we can try to isolate potential error sections.
@@ -300,6 +354,10 @@ def get_content(source, flexible=True, current_attempt=0, max_attempt=10) -> str
     """
     try:
         return TexSoup(source, tolerance=int(flexible))
+    except:
+        warnings.warn(LatexWarning(f"Error parsing the document directly. Trying to recover."))
+        return get_content_per_section(source, flexible=flexible, verbose=verbose)[0]
+    """
     except EOFError as error:
         # End of document error. split around the offending line and try again
         if (current_attempt >= max_attempt) or not flexible:
@@ -317,12 +375,14 @@ def get_content(source, flexible=True, current_attempt=0, max_attempt=10) -> str
         warnings.warn(LatexWarning(f"error at line {error_at_line:,d}"))
         if not flexible:
             raise e
+
         newsource = source.splitlines()
         newsource = newsource[:error_at_line] + newsource[error_at_line + 1:]
         return get_content('\n'.join(newsource),
                            flexible=current_attempt < max_attempt,
                            current_attempt= current_attempt + 1,
                            max_attempt=max_attempt)
+        """
 
 class LatexDocument:
     """ Handles the latex document interface.
@@ -337,7 +397,7 @@ class LatexDocument:
     :param comments: the comments of the paper
     :param abstract: the abstract of the paper
     """
-    def __init__(self, folder: str, validation: callable = None):
+    def __init__(self, folder: str, validation: callable = None, debug: bool = False):
         self.main_file = find_main_doc(folder)
         self.folder = folder
         self._figures = None
@@ -355,10 +415,20 @@ class LatexDocument:
             validation(source)
         source = self._clean_source(source)
         # self.content = TexSoup(source)
-        self.content = get_content(source)
+        try:
+            content = get_content(source, flexible=True, verbose=True)
+            self._load_content(content)
+        except Exception as e:
+            if not debug:
+                raise e
+            else:
+                print(e)
+        self.source = source
+
+    def _load_content(self, content):
+        self.content = content
         self.macros = self.retrieve_latex_macros()
         self.graphicspath = self.get_graphicspath()
-        self.source = source
 
     def get_graphicspath(self) -> Sequence[str]:
         """Retrieve the graphicspath if declared"""
@@ -522,9 +592,9 @@ class LatexDocument:
         title = ''.join(self.content.find_all('title')[0].text)
         try:
             subtitle = ''.join(self.content.find_all('subtitle')[0].text)
-            return ': '.join([title, subtitle])
+            return ': '.join([title, subtitle]).replace('\n', '')
         except:
-            return title
+            return title.replace('\n', '')
 
     @property
     def title(self) -> str:
@@ -608,19 +678,12 @@ class LatexDocument:
                 new_authors.append(f"{author}")
         self._authors = new_authors
 
-    def get_macros_markdown_text(self, show_errors: bool = False) -> str:
+    def get_macros_markdown_text(self) -> str:
         """ Construct the Markdown object of the macros """
-        macros_text = '\n'.join(self.macros)
-        if show_errors:
-            macros_text = (
-                '<div class="macros" style="background:yellow;visibility:visible;">\n' +
-                macros_text +
-                '</div>')
-        else:
-            macros_text = (
-                '<div class="macros" style="visibility:hidden;">\n' +
-                macros_text +
-                '</div>')
+        macros_text = (
+            '<div class="macros" style="visibility:hidden;">\n' +
+            '\n'.join(self.macros) +
+            '</div>')
 
         return macros_text
 
@@ -635,11 +698,14 @@ class LatexDocument:
         latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = self.select_most_cited_figures()
+        macros_md = self.get_macros_markdown_text() + '\n\n'
 
+        text = f"""{macros_md}\n\n<div id="title">\n\n# {latex_title:s}\n\n</div>\n"""
         if self.comment:
-            joined_latex_authors = '\n\n'.join([self.comment, joined_latex_authors])
+            text += f"""<div id="comments">\n\n{self.comment:s}\n\n</div>\n"""
+        text += f"""<div id="authors">\n\n{joined_latex_authors:s}\n\n</div>\n"""
+        text += f"""<div id="abstract">\n\n**Abstract:**{latex_abstract:s}\n\n</div>\n"""
 
-        text = f"""# {latex_title}\n\n {joined_latex_authors} \n\n **Abstract:** {latex_abstract}"""
         if with_figures:
             figures = [k.generate_markdown_text().replace('|---------|\n', '')
                        for k in selected_latex_figures]
@@ -649,7 +715,6 @@ class LatexDocument:
                 figures_.extend([f'<div id="fig{e:d}">\n', fk, '\n</div>'])
             figures_ = '\n'.join(figures_)
             text = text + '\n' + figures_
-        macros_md = self.get_macros_markdown_text() + '\n\n'
         return  macros_md + force_macros_mathmode(text, self.macros)
 
     def _repr_markdown_(self):
