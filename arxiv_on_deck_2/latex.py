@@ -107,12 +107,20 @@ def convert_eps_to_image(fname: str) -> str:
     return f'{rootname}.png'
 
 
-def find_graphics(where, image, folder=''):
+def find_graphics(where: str, image: str, folder: str = '',
+                  attempt_recover_extension: bool = True) -> str:
     """ Find graphics files for the figure if graphicspath provided """
     for wk in where:
         fname = os.path.join(folder, wk, image)
         if os.path.exists(fname):
             return fname
+    if attempt_recover_extension:
+        warnings.warn(LatexWarning(f'attempting recovering figure {image}'))
+        for extension in ['.png', '.jpg', '.jpeg', '.pdf', '.eps']:
+            for wk in where:
+                fname = os.path.join(folder, wk, image + f'{extension}')
+                if os.path.exists(fname):
+                    return fname
     raise FileNotFoundError(f"Could not find figure {image}")
 
 class LatexFigure(dict):
@@ -527,6 +535,8 @@ class LatexDocument:
              r"$\newcommand{\arcsec}{''}$",
              r"$\newcommand{\arcmin}{'}$",
              r"$\newcommand{\ion}[2]{#1#2}$",
+             r"$\newcommand{\textsc}[1]{\textrm{#1}}$",
+             r"$\newcommand{\hl}[1]{\textrm{#1}}$",
             ])
 
         macros_text = '\n'.join(['$' + k + '$' for k in macros.splitlines() if k])
@@ -574,11 +584,15 @@ class LatexDocument:
 
     def get_abstract(self) -> str:
         """ Extract abstract from document """
-        abstract = self.content.find_all('abstract')[0]
-        abstract = [str(k).strip() for k in abstract if str(k)]
-        abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
-        abstract = ''.join(abstract)
-        return abstract
+        try:
+            abstract = self.content.find_all('abstract')[0]
+            abstract = [str(k).strip() for k in abstract if str(k)]
+            abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
+            abstract = ''.join(abstract)
+            return abstract
+        except Exception as e:
+            warnings.warn(LatexWarning(f"Could not extract abstract from {self.main_file}"))
+            return ""
 
     @property
     def abstract(self) -> str:
@@ -589,12 +603,13 @@ class LatexDocument:
 
     def get_title(self) -> str:
         """ Extract document's title """
-        title = ''.join(self.content.find_all('title')[0].text)
+        title = ''.join(self.content.find_all('title')[0].contents[-1])
         try:
-            subtitle = ''.join(self.content.find_all('subtitle')[0].text)
-            return ': '.join([title, subtitle]).replace('\n', '')
+            subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
+            text = ': '.join([title, subtitle]).replace('\n', '')
         except:
-            return title.replace('\n', '')
+            text = title.replace('\n', '')
+        return text.replace('~', ' ')
 
     @property
     def title(self) -> str:
@@ -611,10 +626,15 @@ class LatexDocument:
         if len(author_decl) > 1:
             orcid_search = re.compile('[0-9X]{4}-[0-9X]{4}-[0-9X]{4}-[0-9X]{4}')
             for ak in author_decl:
-                if orcid_search.search(ak[0]):
+                opts = ak.contents[0]
+                if orcid_search.search(opts):
                     authors.append(''.join(map(str, ak.contents[1:])))
                 else:
-                    authors.append(''.join(ak.string))
+                    try:
+                        authors.append(''.join(ak.string))
+                    except: # multiple arguments
+                        authors.append(''.join(map(str, ak.contents[1:])))
+
 
         else:
             # The following is buggy: does not work for \author{name affil, name2 affil2, ...}
@@ -694,7 +714,7 @@ class LatexDocument:
         :return: markdown text
         """
         latex_abstract = self.abstract
-        latex_title = self.title
+        latex_title = self.title.replace('~', ' ')
         latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = self.select_most_cited_figures()
