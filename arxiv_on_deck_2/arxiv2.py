@@ -8,6 +8,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 from typing import Sequence
+from datetime import datetime
 try:
     from IPython.display import Markdown
 except ImportError:
@@ -75,11 +76,13 @@ class ArxivPaper(dict):
         except AttributeError:
             comments = ""
 
+        date = ""
 
         data = dict(identifier=identifier,
                     authors=authors,
                     abstract=abstract,
                     title=title,
+                    date = date,
                     comments=comments)
         return ArxivPaper(**data)
 
@@ -94,6 +97,7 @@ class ArxivPaper(dict):
 |---:|:---|
 | [![arXiv](https://img.shields.io/badge/arXiv-{identifier}-b31b1b.svg)](https://arxiv.org/abs/{identifier}) | **{title}**  |
 || {joined_authors} |
+|*Appeared on*| *{date}*|
 |*Comments*| *{comments}*|
 |**Abstract**| {abstract}|""".format(joined_authors=joined_authors, **self)
 
@@ -118,8 +122,12 @@ def get_new_papers() -> Sequence[ArxivPaper]:
     response = requests.get(url)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'html.parser')
+    date = soup.find_all('div', {'class': 'list-dateline'})[0].text.replace('\n', '').split(',')[-1].strip()
+    date = str(datetime.strptime(date, '%d %b %y').date())
     r = soup.find_all('dl')[0].find_all(['dt', 'dd'])
     new_papers = [ArxivPaper.from_bs4_tags(dt, dd) for dt, dd in zip(r[::2], r[1::2])]
+    for paper in new_papers:
+        paper['date'] = date
     return new_papers
 
 
@@ -151,10 +159,17 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
                    .text.replace('\n', '')\
                    .strip()
 
+    date = soup.find('div', {'class': "dateline"})\
+                    .text.replace('\n', '')\
+                    .replace('[Submitted on', '').replace(']', '')\
+                    .strip()
+    date = str(datetime.strptime(date, '%d %b %Y').date())
+
     data = dict(identifier=paper_identifier,
                 authors=authors,
                 abstract=abstract,
                 title=title,
+                date=date,
                 comments=comments)
 
     return ArxivPaper(**data)
