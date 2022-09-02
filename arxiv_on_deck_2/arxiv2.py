@@ -4,6 +4,7 @@ import tarfile
 import os
 import shutil
 import requests
+import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from bs4.element import Tag
@@ -163,6 +164,9 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
                     .text.replace('\n', '')\
                     .replace('[Submitted on', '').replace(']', '')\
                     .strip()
+
+    # remove any version information and keep only first publication
+    date = re.sub('\(.*\)', '', date).strip()
     date = str(datetime.strptime(date, '%d %b %Y').date())
 
     data = dict(identifier=paper_identifier,
