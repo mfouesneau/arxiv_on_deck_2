@@ -10,6 +10,7 @@ If the paper is not already stored, it will be processed.
 """
 
 import requests
+import re
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 from typing import Sequence
