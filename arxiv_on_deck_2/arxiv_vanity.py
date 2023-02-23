@@ -227,7 +227,7 @@ def highlight_author(author_list: Sequence[str], author: str) -> Sequence[str]:
     :param author: the author to highlight
     :return: the list of authors with the highlighted author
     """
-    new_lst = [f"<mark>{name}</mark>" if author_match(name, author) for name in author_list]
+    new_lst = [f"<mark>{name}</mark>" if author_match(name, author) else name for name in author_list]
     return new_lst
 
 
