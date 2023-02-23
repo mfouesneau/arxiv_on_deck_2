@@ -184,6 +184,42 @@ def select_most_cited_figures(content: dict, N: int = 3) -> Sequence:
     return selected_figures
 
 
+def author_match(author: str, hl_list: Sequence[str], verbose=False) -> Sequence[str]:
+    """ Matching author names with a family name reference list
+    
+    :param author: the author string to check
+    :param hl_list: the list of reference authors to match
+    :param verbose: prints matching results if set
+    :return: the matching sequences or empty sequence if None
+    """
+    author = clean_author(author)
+    for hl in hl_list:
+        match = re.findall(r"\b{:s}\b".format(hl), author, re.IGNORECASE)
+        if hl in author:
+            if verbose:
+                print(author, hl, match)
+            return match
+
+
+def highlight_authors_in_list(author_list: Sequence[str], 
+                              hl_list: Sequence[str], 
+                              verbose: bool = False) -> Sequence[str]:
+    """ highlight all authors of the paper that match `lst` entries
+
+    :param author_list: the list of authors
+    :param hl_list: the list of authors to highlight
+    :param verbose: prints matching results if set
+    :return: the list of authors with the highlighted authors
+    """
+    new_authors = []
+    for author in self.author_list:
+        match = author_match(author, hl_list)
+        if match:
+            new_authors.append(f"<mark>{author}</mark>")
+        else:
+            new_authors.append(f"{author}")
+    return new_authors
+  
 def highlight_author(author_list: Sequence[str], author: str) -> Sequence[str]:
     """ Highlight a particular author in the list of authors
 
@@ -191,31 +227,8 @@ def highlight_author(author_list: Sequence[str], author: str) -> Sequence[str]:
     :param author: the author to highlight
     :return: the list of authors with the highlighted author
     """
-    # TODO: make it a word matching regex
-    new_lst = [f"<mark>{name}</mark>" if author in name else name for name in author_list]
+    new_lst = [f"<mark>{name}</mark>" if author_match(name, author) for name in author_list]
     return new_lst
-
-
-def highlight_authors_in_list(author_list: Sequence[str],
-                              hl_list: Sequence[str]) -> Sequence[str]:
-    """ highlight all authors of the paper that match `lst` entries
-
-    :param author_list: the list of authors
-    :param hl_list: the list of authors to highlight
-    :return: the list of authors with the highlighted authors
-    """
-    new_authors = []
-    for author in author_list:
-        found = False
-        for hl in hl_list:
-            if hl in author:
-                new_authors.append(f"<mark>{author}</mark>")
-                found = True
-                break
-        if (not found):
-            new_authors.append(f"{author}")
-
-    return new_authors
 
 
 def make_short_author_list(authors: Sequence[str],
