@@ -212,7 +212,7 @@ def highlight_authors_in_list(author_list: Sequence[str],
     :return: the list of authors with the highlighted authors
     """
     new_authors = []
-    for author in self.author_list:
+    for author in author_list:
         match = author_match(author, hl_list)
         if match:
             new_authors.append(f"<mark>{author}</mark>")
