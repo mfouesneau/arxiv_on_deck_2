@@ -10,6 +10,7 @@ try:
 except ImportError:
     Markdown = None
 from pdf2image import convert_from_path
+from .arxiv_vanity import highlight_authors_in_list
 # Requires poppler system library
 # !pip3 install pdf2image
 
@@ -681,22 +682,13 @@ class LatexDocument:
         """
         return select_most_cited_figures(self.figures, self.content)
 
-    def highlight_authors_in_list(self, hl_list: Sequence[str]):
+    def highlight_authors_in_list(self, hl_list: Sequence[str], verbose: bool = False):
         """ highlight all authors of the paper that match `lst` entries
 
         :param hl_list: list of authors to highlight
+        :param verbose: display matching information if set
         """
-        new_authors = []
-        for author in self.authors:
-            found = False
-            for hl in hl_list:
-                if hl in author:
-                    new_authors.append(f"<mark>{author}</mark>")
-                    found = True
-                    break
-            if not found:
-                new_authors.append(f"{author}")
-        self._authors = new_authors
+        self._authors = highlight_authors_in_list(self.authors, hl_list, verbose=verbose)
 
     def get_macros_markdown_text(self) -> str:
         """ Construct the Markdown object of the macros """
