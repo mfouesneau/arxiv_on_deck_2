@@ -500,11 +500,25 @@ class LatexDocument:
             (r"\\'{i}", r'í'),
             (r"\\'{o}", r'ó'),
             (r"\\'{u}", r'ú'),
-
+            (r'\\"{u}', r'ü'),
+            (r'\\"{o}', r'ö'),
+            (r'\\"{a}', r'ä'),
+            (r'\\"{e}', r'ë'),
+            (r'\\"{i}', r'ï'),
+            (r'\\^{i}', r'î'),
+            (r'\\^{e}', r'ê'),
+            (r'\\c{c}', r'ç'),
+            (r"\\'{\\i}", r'í'),
+            (r"\\`{\\i}", r'ì'),
         ]
+        
+        # add those without the {} 
+        which = which + [(k.replace('{', '').replace('}', ''), v) for k, v in which]
+        # add capital letters too
+        which = which + [(k.upper(), v.upper()) for k, v in which]
+        
         for from_, to_ in which:
             source = re.sub(from_, to_, source)
-            source = re.sub(r'\\~{n}', r'ñ', source)
         self.source = source
         return source
 
