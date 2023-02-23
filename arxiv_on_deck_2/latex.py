@@ -618,9 +618,11 @@ class LatexDocument:
 
     def get_title(self) -> str:
         """ Extract document's title """
-        title = ''.join(self.content.find_all('title')[0].contents[-1])
+        # title = ''.join(self.content.find_all('title')[0].contents[-1])
+        title = ''.join(str(k) for k in self.content.find_all('title')[0].contents if 'thanks' not in str(k))
         try:
-            subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
+            # subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
+            subtitle = ''.join(str(k) for k in self.content.find_all('subtitle')[0].contents if 'thanks' not in str(k))
             text = ': '.join([title, subtitle]).replace('\n', '')
         except:
             text = title.replace('\n', '')
