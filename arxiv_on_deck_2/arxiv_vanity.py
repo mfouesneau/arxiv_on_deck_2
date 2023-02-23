@@ -192,7 +192,6 @@ def author_match(author: str, hl_list: Sequence[str], verbose=False) -> Sequence
     :param verbose: prints matching results if set
     :return: the matching sequences or empty sequence if None
     """
-    author = clean_author(author)
     for hl in hl_list:
         match = re.findall(r"\b{:s}\b".format(hl), author, re.IGNORECASE)
         if hl in author:
