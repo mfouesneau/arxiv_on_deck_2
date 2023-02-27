@@ -37,6 +37,7 @@ setup(name = package_name,
     install_requires=["beautifulsoup4",
             "TexSoup",
             "pdf2image",
-	        "myst-parser",
+	    "myst-parser",
+	    "pybtex"
     ]
 )
