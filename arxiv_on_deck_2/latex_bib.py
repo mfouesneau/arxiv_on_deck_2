@@ -172,7 +172,6 @@ def replace_citations(full_md: str, bibdata: LatexBib, kind='all'):
 
     r = re.finditer(r"(\\" + kind + r"{)(.*?)\}", full_md)
     for rk in r:
-        print(str(rk))
         keys = rk.groups()[1].split(',')
         values = [bibdata.get_citation_md(key.strip(), kind=kind) for key in keys]
         mdtext = ' (' + ', '.join(values) + ') '
