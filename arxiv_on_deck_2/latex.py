@@ -139,7 +139,6 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
     latex = re.sub(r"\\label{.*?}", r"", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
-    latex = re.sub(r"%.*", r"", latex)
     return(latex)
 
 
