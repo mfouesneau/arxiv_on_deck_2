@@ -6,6 +6,7 @@ requires = ["setuptools",
             "beautifulsoup4",
             "TexSoup",
             "pdf2image",
-	        "myst-parser",
+	    "pybtex",
+	    "myst-parser",
             "sphinx_autodoc_annotation",
             "extension-helpers"]
