@@ -3,3 +3,4 @@ myst-parser
 sphinx_autodoc_annotation
 TexSoup
 pdf2image
+pybtex
