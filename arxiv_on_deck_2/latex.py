@@ -130,6 +130,7 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(\\emph{)(.*?)\}", r"*\2*", latex)
     latex = re.sub(r"(\\textbf{)(.*?)\}", r"**\2**", latex)
     latex = re.sub(r"(\\textit{)(.*?)\}", r"_\2_", latex)
+    latex = re.sub(r"(\\textsc{)(.*?)\}", r"\2", latex)
     latex = re.sub(r"(\\section{)(.*?)\}", r"### \2", latex)
     latex = re.sub(r"(.*)\\begin{equation}", r"\n\n$$", latex)
     latex = re.sub(r"(.*)\\end{equation}", r"$$\n\n", latex)
@@ -624,7 +625,7 @@ class LatexDocument:
             abstract = self.content.find_all('abstract')[0]
             abstract = [str(k).strip() for k in abstract if str(k)]
             abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
-            abstract = ' '.join(abstract)
+            abstract = ''.join(abstract)
             return abstract
         except Exception as e:
             warnings.warn(LatexWarning(f"Could not extract abstract from {self.main_file}"))
