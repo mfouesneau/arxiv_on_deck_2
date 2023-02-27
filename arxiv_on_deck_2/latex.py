@@ -767,7 +767,7 @@ class LatexDocument:
             for (e, fk) in enumerate(figures, 1):
                 figures_.extend([f'<div id="div_fig{e:d}">\n', fk, '\n</div>'])
             figures_ = '\n'.join(figures_)
-            text = force_macros_mathmode(text + '\n' + figures_, self.macros)
+            text = text + '\n' + force_macros_mathmode(figures_, self.macros)
         return  macros_md + text
 
     def _repr_markdown_(self):
