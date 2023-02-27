@@ -530,7 +530,7 @@ class LatexDocument:
             (r'\\c{c}', r'ç'),
             (r"\\'{\\i}", r'í'),
             (r"\\`{\\i}", r'ì'),
-            (r"\\AA, r'Å'),
+            (r"\\AA", r'Å'),
         ]
         
         # add those without the {} 
