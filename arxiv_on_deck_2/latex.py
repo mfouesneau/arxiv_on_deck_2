@@ -123,6 +123,24 @@ def find_graphics(where: str, image: str, folder: str = '',
                 if os.path.exists(fname):
                     return fname
     raise FileNotFoundError(f"Could not find figure {image}")
+    
+    
+def tex2md(latex: str) -> str:
+    """ Replace some obvious tex commands to their markdown equivalent """
+    latex = re.sub(r"(\\emph{)(.*?)\}", r"*\2*", latex)
+    latex = re.sub(r"(\\textbf{)(.*?)\}", r"**\2**", latex)
+    latex = re.sub(r"(\\textit{)(.*?)\}", r"_\2_", latex)
+    latex = re.sub(r"(\\section{)(.*?)\}", r"### \2", latex)
+    latex = re.sub(r"(.*)\\begin{equation}", r"\n\n$$", latex)
+    latex = re.sub(r"(.*)\\end{equation}", r"$$\n\n", latex)
+    latex = re.sub(r"(.*)\\begin{itemize}\n", r"", latex)
+    latex = re.sub(r"(.*)(\\end{itemize})\n", r"", latex)
+    latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
+    latex = re.sub(r"\\label{.*?}", r"", latex)
+    latex = re.sub(r"(.*)\\item", r"*", latex)
+    latex = re.sub(r"%.*", r"", latex)
+    return(latex)
+
 
 class LatexFigure(dict):
     """ Representation of a figure from a LatexDocument
@@ -175,7 +193,7 @@ class LatexFigure(dict):
             # current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
             current = '<img src="{image}" alt="Fig{num:d}" width="100%"/>'.format(num=self['num'], image=self['images'][0])
 
-        return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(current=current, **self)
+        return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(current=current, caption=tex2md(self['caption']), label=self['label'])
 
     def _repr_markdown_(self):
         if Markdown is None:
@@ -392,6 +410,7 @@ def get_content(source: str, flexible:bool = True, verbose:bool = False) -> TexN
                            current_attempt= current_attempt + 1,
                            max_attempt=max_attempt)
         """
+        
 
 class LatexDocument:
     """ Handles the latex document interface.
@@ -619,10 +638,15 @@ class LatexDocument:
     def get_title(self) -> str:
         """ Extract document's title """
         # title = ''.join(self.content.find_all('title')[0].contents[-1])
-        title = ''.join(str(k) for k in self.content.find_all('title')[0].contents if 'thanks' not in str(k))
+        title = doc.content.find_all('title')[0]
+        # remove BracketGroup (command options)
+        title = [arg.string for arg in title.expr.args if arg.name != "BracketGroup"][0]
+        title = ''.join(str(k) for k in title if 'thanks' not in str(k))
+        
         try:
             # subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
-            subtitle = ''.join(str(k) for k in self.content.find_all('subtitle')[0].contents if 'thanks' not in str(k))
+            subtitle = [arg.string for arg in doc.content.find_all('subtitle')[0] if arg.name != "BracketGroup"][0]
+            subtitle = ''.join(str(k) for k in subtitle if 'thanks' not in str(k))
             text = ': '.join([title, subtitle]).replace('\n', '')
         except:
             text = title.replace('\n', '')
@@ -721,8 +745,8 @@ class LatexDocument:
         :param with_figures: if True, the figures are included in the summary
         :return: markdown text
         """
-        latex_abstract = self.abstract
-        latex_title = self.title.replace('~', ' ')
+        latex_abstract = tex2md(self.abstract)
+        latex_title = tex2md(self.title.replace('~', ' '))
         latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
         selected_latex_figures = self.select_most_cited_figures()
