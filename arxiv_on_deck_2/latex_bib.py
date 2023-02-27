@@ -4,6 +4,7 @@ from pybtex.database import parse_file
 from pybtex.database import BibliographyData, Entry
 from typing import Union
 import os
+import re
 from .latex import LatexDocument
 
 class LatexBib:
