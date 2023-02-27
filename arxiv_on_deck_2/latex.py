@@ -193,7 +193,8 @@ class LatexFigure(dict):
             # current = "![Fig{num:d}]({image})".format(num=self['num'], image=self['images'][0])
             current = '<img src="{image}" alt="Fig{num:d}" width="100%"/>'.format(num=self['num'], image=self['images'][0])
 
-        return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(current=current, caption=tex2md(self['caption']), label=self['label'])
+        return """{current}\n\n**Figure {num}. -** {caption} (*{label}*)""".format(
+            current=current, caption=tex2md(self['caption']), label=self['label'], num=self['num'])
 
     def _repr_markdown_(self):
         if Markdown is None:
