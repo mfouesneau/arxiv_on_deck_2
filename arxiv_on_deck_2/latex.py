@@ -128,8 +128,11 @@ def find_graphics(where: str, image: str, folder: str = '',
 def tex2md(latex: str) -> str:
     """ Replace some obvious tex commands to their markdown equivalent """
     latex = re.sub(r"(\\emph{)(.*?)\}", r"*\2*", latex)
+    latex = re.sub(r"({\\em)(.*?)\}", r"*\2*", latex)
     latex = re.sub(r"(\\textbf{)(.*?)\}", r"**\2**", latex)
+    latex = re.sub(r"({\\bf)(.*?)\}", r"**\2**", latex)
     latex = re.sub(r"(\\textit{)(.*?)\}", r"_\2_", latex)
+    latex = re.sub(r"({\\it)(.*?)\}", r"_\2_", latex)
     latex = re.sub(r"(\\textsc{)(.*?)\}", r"\2", latex)
     latex = re.sub(r"(\\section{)(.*?)\}", r"### \2", latex)
     latex = re.sub(r"(.*)\\begin{equation}", r"\n\n$$", latex)
@@ -138,7 +141,10 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(.*)(\\end{itemize})\n", r"", latex)
     latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
     latex = re.sub(r"\\label{.*?}", r"", latex)
+    latex = re.sub(r"\\footnote{.*?}", r"", latex)
+    latex = re.sub(r"(\\mbox{)(.*?)\}", r"$\2$", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
+    
     return(latex)
 
 
