@@ -156,9 +156,12 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
                    .replace('Abstract:', '')\
                    .strip()
 
-    comments = soup.find('td', {'class': 'comments'})\
-                   .text.replace('\n', '')\
-                   .strip()
+    try:
+        comments = soup.find('td', {'class': 'comments'})\
+                       .text.replace('\n', '')\
+                       .strip()
+    except AttributeError:  # no comment
+        comments = ""
 
     date = soup.find('div', {'class': "dateline"})\
                     .text.replace('\n', '')\
