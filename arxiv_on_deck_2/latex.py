@@ -185,7 +185,7 @@ def force_mathmode(node):
     """
     for child in node.children:
         if not isinstance(child.expr, TexMathModeEnv):
-            replace(title, child, TexMathModeEnv([child.expr]))
+            replace(node, child, TexMathModeEnv([child.expr]))
     return node
         
 
