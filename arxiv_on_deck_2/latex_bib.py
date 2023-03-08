@@ -5,6 +5,7 @@ from pybtex.database import BibliographyData, Entry
 from typing import Union, Sequence
 import os
 import re
+import warnings
 from .latex import LatexDocument
 
 def clean_special_characters(source: str) -> str:
