@@ -21,10 +21,10 @@ def parse_bbl(fname: str) -> BibliographyData:
         Thanks to https://regex101.com/
         """
         regex_href = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>\w+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9-\.]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
         """
         regex_nohref = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>\w+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9-\.]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
         """
 
         # You can manually specify the number of replacements by changing the 4th argument
