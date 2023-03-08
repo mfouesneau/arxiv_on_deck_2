@@ -143,8 +143,6 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(.*)(\\end{itemize})\n", r"", latex)
     latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
     latex = re.sub(r"\\label{.*?}", r"", latex)
-    latex = re.sub(r"\\footnote{.*?}", r"", latex)
-    # latex = re.sub(r"(\\mbox{)(.*?)\}", r"$\\mbox{\2}$", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
 
     return(latex)
