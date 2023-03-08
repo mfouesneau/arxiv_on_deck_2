@@ -123,8 +123,8 @@ def find_graphics(where: str, image: str, folder: str = '',
                 if os.path.exists(fname):
                     return fname
     raise FileNotFoundError(f"Could not find figure {image}")
-    
-    
+
+
 def tex2md(latex: str) -> str:
     """ Replace some obvious tex commands to their markdown equivalent """
     latex = re.sub(r"(\\emph{)(.*?)\}", r"*\2*", latex)
@@ -144,7 +144,7 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"\\footnote{.*?}", r"", latex)
     latex = re.sub(r"(\\mbox{)(.*?)\}", r"$\\mbox{\2}$", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
-    
+
     return(latex)
 
 
@@ -417,7 +417,7 @@ def get_content(source: str, flexible:bool = True, verbose:bool = False) -> TexN
                            current_attempt= current_attempt + 1,
                            max_attempt=max_attempt)
         """
-        
+
 
 class LatexDocument:
     """ Handles the latex document interface.
@@ -538,12 +538,12 @@ class LatexDocument:
             (r"\\`{\\i}", r'ì'),
             (r"\\AA", r'Å'),
         ]
-        
-        # add those without the {} 
+
+        # add those without the {}
         which = which + [(k.replace('{', '').replace('}', ''), v) for k, v in which]
         # add capital letters too
         which = which + [(k.upper(), v.upper()) for k, v in which]
-        
+
         for from_, to_ in which:
             source = re.sub(from_, to_, source)
         self.source = source
@@ -650,7 +650,7 @@ class LatexDocument:
         # remove BracketGroup (command options)
         title = [arg.string for arg in title.expr.args if arg.name != "BracketGroup"][0]
         title = ''.join(str(k) for k in title if 'thanks' not in str(k))
-        
+
         try:
             # subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
             subtitle = [arg.string for arg in self.content.find_all('subtitle')[0] if arg.name != "BracketGroup"][0]
@@ -757,7 +757,7 @@ class LatexDocument:
         latex_title = tex2md(self.title.replace('~', ' '))
         latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
-        selected_latex_figures = self.select_most_cited_figure
+        selected_latex_figures = self.select_most_cited_figures()
         macros_md = self.get_macros_markdown_text() + '\n\n'
 
         text = f"""{macros_md}\n\n<div id="title">\n\n# {latex_title:s}\n\n</div>\n"""
