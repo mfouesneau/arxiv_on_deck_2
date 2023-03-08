@@ -135,6 +135,7 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(\\textit{)(.*?)\}", r"_\2_", latex)
     latex = re.sub(r"({\\it)(.*?)\}", r"_\2_", latex)
     latex = re.sub(r"(\\textsc{)(.*?)\}", r"\2", latex)
+    latex = re.sub(r"(\\small{)(.*?)\}", r"\2", latex)
     latex = re.sub(r"(\\section{)(.*?)\}", r"### \2", latex)
     latex = re.sub(r"(.*)\\begin{equation}", r"\n\n$$", latex)
     latex = re.sub(r"(.*)\\end{equation}", r"$$\n\n", latex)
@@ -621,6 +622,7 @@ class LatexDocument:
              r"$\newcommand{\ion}[2]{#1#2}$",
              r"$\newcommand{\textsc}[1]{\textrm{#1}}$",
              r"$\newcommand{\hl}[1]{\textrm{#1}}$",
+             r"$\newcommand{\footnote}[1]{}$",
             ])
 
         macros_text = '\n'.join(['$' + k + '$' for k in macros.splitlines() if k])
