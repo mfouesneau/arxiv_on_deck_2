@@ -47,7 +47,7 @@ def parse_bbl(fname: str) -> BibliographyData:
         
     def clean_author(authors):
         """ Put things in the right format for bibtex """
-        regex = r"(?P<last>{\w+})\s(?P<first>[\w\.\s\~]+),*"
+        regex = r"(?P<last>{[\w{}\~\-\\]+})[,\s]+?(?P<first>[\w{}\~\-\\\.\s]+),*"
         return ['{0:s}, {1:s}'.format(*it) 
                 for it in re.findall(regex, authors.strip())]
         
