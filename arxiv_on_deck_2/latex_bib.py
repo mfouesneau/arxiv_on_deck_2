@@ -7,6 +7,49 @@ import os
 import re
 from .latex import LatexDocument
 
+def clean_special_characters(source: str) -> str:
+    """ Replace latex macros of special characters (accents etc) for their unicode alternatives
+    
+    :param source: bibitem raw string definition
+    :return: transformed bibitem string definition
+    """
+    # special characters
+    which = [
+        (r'\\~{n}', r'ñ'),
+        (r'\\~{o}', r'õ'),
+        (r'\\~{a}', r'ã'),
+        (r"\\`{a}", r'à'),
+        (r"\\`{e}", r'è'),
+        (r"\\`{i}", r'ì'),
+        (r"\\`{o}", r'ò'),
+        (r"\\`{u}", r'ù'),
+        (r"\\'{a}", r'á'),
+        (r"\\'{e}", r'é'),
+        (r"\\'{i}", r'í'),
+        (r"\\'{o}", r'ó'),
+        (r"\\'{u}", r'ú'),
+        (r'\\"{u}', r'ü'),
+        (r'\\"{o}', r'ö'),
+        (r'\\"{a}', r'ä'),
+        (r'\\"{e}', r'ë'),
+        (r'\\"{i}', r'ï'),
+        (r'\\^{i}', r'î'),
+        (r'\\^{e}', r'ê'),
+        (r'\\c{c}', r'ç'),
+        (r"\\'{\\i}", r'í'),
+        (r"\\`{\\i}", r'ì'),
+        (r"\\AA", r'Å'),
+    ]
+
+    # add those without the {}
+    which = which + [(k.replace('{', '').replace('}', ''), v) for k, v in which]
+    # add capital letters too
+    which = which + [(k.upper(), v.upper()) for k, v in which]
+
+    for from_, to_ in which:
+        source = re.sub(from_, to_, source)
+    return source
+
 
 def parse_bbl(fname: str) -> BibliographyData:
     """ Parse bibliographic information from bbl file (compiled bibliography) 
@@ -30,6 +73,9 @@ def parse_bbl(fname: str) -> BibliographyData:
         # You can manually specify the number of replacements by changing the 4th argument
         regex = regex_href if r'\href' in item_str else regex_nohref
 
+        # replace special characters
+        item_str = clean_special_characters(item_str)
+        
         matches = re.search(regex, item_str.replace('\n', ' '), 
                             re.DOTALL | re.IGNORECASE | re.VERBOSE | re.MULTILINE)
 
