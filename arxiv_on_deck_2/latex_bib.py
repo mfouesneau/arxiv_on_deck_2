@@ -295,12 +295,13 @@ class LatexBib:
         return cls(bib_data)
 
 
-def replace_citations(full_md: str, bibdata: LatexBib, kind='all'):
+def replace_citations(full_md: str, bibdata: LatexBib, kind='all', raise_exceptions: bool = False):
     """ Parse and replace \citex calls remaining in the Markdown text
 
     :param full_md: Markdown document
     :param bibdata: the bibliographic data
     :param kind: which of \citex macros (all, citet, citep, citealt)
+    :param raise_exceptions: set to block if a citation is raising issues
     :return: updated content
     """
     allowed = ('all', 'citet', 'citep', 'citealt', 'cite')
@@ -320,11 +321,15 @@ def replace_citations(full_md: str, bibdata: LatexBib, kind='all'):
     r = re.finditer(r"(\\" + kind + r"{)(.*?)\}", full_md)
     for rk in r:
         keys = rk.groups()[1].split(',')
-        values = [bibdata.get_citation_md(key.strip(), kind=kind) for key in keys]
-        mdtext = ' (' + ', '.join(values) + ') '
-        new_text = ''.join((new_text,
-                           full_md[last_pos: rk.start()],
-                           mdtext))
+        try:
+            values = [bibdata.get_citation_md(key.strip(), kind=kind) for key in keys]
+            mdtext = ' (' + ', '.join(values) + ') '
+            new_text = ''.join((new_text,
+                               full_md[last_pos: rk.start()],
+                               mdtext))
+        except KeyError as e:
+            if raise_exceptions:
+                raise(e)
         last_pos = rk.end()
     new_text = ''.join((new_text,
                         full_md[last_pos:]))
