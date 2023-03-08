@@ -142,7 +142,7 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
     latex = re.sub(r"\\label{.*?}", r"", latex)
     latex = re.sub(r"\\footnote{.*?}", r"", latex)
-    latex = re.sub(r"(\\mbox{)(.*?)\}", r"$\\mbox{\2}$", latex)
+    # latex = re.sub(r"(\\mbox{)(.*?)\}", r"$\\mbox{\2}$", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
 
     return(latex)
@@ -628,6 +628,9 @@ class LatexDocument:
         """ Extract abstract from document """
         try:
             abstract = self.content.find_all('abstract')[0]
+            # force math around macros
+            for child in abstract.children:
+                abstract.replace(child, TexMathModeEnv([child.expr]))   
             abstract = [str(k).strip() for k in abstract if str(k)]
             abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
             abstract = ' '.join(abstract)
@@ -647,13 +650,20 @@ class LatexDocument:
         """ Extract document's title """
         # title = ''.join(self.content.find_all('title')[0].contents[-1])
         title = self.content.find_all('title')[0]
+        # force math around macros
+        for child in title.children:
+            title.replace(child, TexMathModeEnv([child.expr]))  
         # remove BracketGroup (command options)
         title = [arg.string for arg in title.expr.args if arg.name != "BracketGroup"][0]
         title = ''.join(str(k) for k in title if 'thanks' not in str(k))
 
         try:
             # subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
-            subtitle = [arg.string for arg in self.content.find_all('subtitle')[0] if arg.name != "BracketGroup"][0]
+            # force math around macros
+            subtitle = self.content.find_all('subtitle')[0]
+            for child in subtitle.children:
+                title.replace(subtitle, TexMathModeEnv([child.expr]))
+            subtitle = [arg.string for arg in subtitle if arg.name != "BracketGroup"][0]
             subtitle = ''.join(str(k) for k in subtitle if 'thanks' not in str(k))
             text = ': '.join([title, subtitle]).replace('\n', '')
         except:
