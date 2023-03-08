@@ -64,10 +64,10 @@ def parse_bbl(fname: str) -> BibliographyData:
         Thanks to https://regex101.com/
         """
         regex_href = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9-\.]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
         """
         regex_nohref = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9-\.]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
         """
 
         # You can manually specify the number of replacements by changing the 4th argument
@@ -79,7 +79,10 @@ def parse_bbl(fname: str) -> BibliographyData:
         matches = re.search(regex, item_str.replace('\n', ' '),
                             re.DOTALL | re.IGNORECASE | re.VERBOSE | re.MULTILINE)
 
-        info = matches.groupdict()
+        try:
+            info = matches.groupdict()
+        except AttributeError as e:
+            raise RuntimeError(f"Error processing bibitem\n item = {item_str}\n regex = {regex}")
         info.setdefault('title', "")
         info.setdefault('url', "")
         return info
@@ -119,7 +122,12 @@ def parse_bbl(fname: str) -> BibliographyData:
     print(f"Found {n_entries:,d} bibliographic references in {fname:s}.")
 
     # extract individual fields per entry
-    r = [extract_bibitem_info(it) for it in entries]
+    r = []
+    for it in entries:
+        try:
+            r.append(extract_bibitem_info(it))
+        except RuntimeError as e:
+            warnings.warn(str(e))
 
     # create the bibtex text
     bibtex = ''.join(get_bibtex_code(rk) for rk in r)
