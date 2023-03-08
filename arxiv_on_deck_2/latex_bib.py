@@ -65,16 +65,17 @@ def parse_bbl(fname: str) -> BibliographyData:
         Thanks to https://regex101.com/
         """
         regex_href = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+?)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3}).*?href(.*?{(?P<url>http[\S]*)})(?P<rest>.*)
         """
         regex_nohref = r"""
-        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
+        \\bibitem(\[[^\[\]]*?\]){(?P<bibkey>[a-zA-Z0-9\-\+\.\S]+?)}(?P<authors>|([\D]*?))(?P<year>[12][0-9]{3})(?P<rest>.*)
         """
 
         # You can manually specify the number of replacements by changing the 4th argument
         regex = regex_href if r'\href' in item_str else regex_nohref
 
         # replace special characters
+        item_str = item_str.replace(r'\&', '')
         item_str = clean_special_characters(item_str)
 
         matches = re.search(regex, item_str.replace('\n', ' '),
