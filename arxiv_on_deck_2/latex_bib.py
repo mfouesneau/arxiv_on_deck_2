@@ -77,7 +77,7 @@ def parse_bbl(fname: str) -> BibliographyData:
     
     # create the bibtex text
     bibtex = ''.join(get_bibtex_code(rk) for rk in r)
-    return pybtex.database.BibliographyData.from_string(bibtex, 'bibtex')
+    return BibliographyData.from_string(bibtex, 'bibtex')
 
 
 def merge_BibliographyData(dbs: Sequence[BibliographyData]) -> BibliographyData:
