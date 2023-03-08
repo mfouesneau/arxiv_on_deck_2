@@ -149,6 +149,47 @@ def tex2md(latex: str) -> str:
     return(latex)
 
 
+# BUG in TexSoup: https://github.com/alvinwan/TexSoup/pull/141
+def replace(self, child, *nodes):
+        r"""Replace provided node with node(s).
+        :param TexNode child: Child node to replace
+        :param TexNode nodes: List of nodes to subtitute in
+        >>> from TexSoup import TexSoup
+        >>> soup = TexSoup(r'''
+        ... \begin{itemize}
+        ...     \item Hello
+        ...     \item Bye
+        ... \end{itemize}''')
+        >>> items = list(soup.find_all('item'))
+        >>> bye = items[1]
+        >>> soup.itemize.replace(soup.item, bye)
+        >>> soup.itemize
+        \begin{itemize}
+            \item Bye
+        \item Bye
+        \end{itemize}
+        """
+        for arg in self.expr.args:
+            if child.expr in arg._contents:
+                arg.insert(arg.remove(child.expr), *nodes)
+                return
+        self.expr.insert(
+            self.expr.remove(child.expr),
+            *nodes)
+        
+
+def force_mathmode(node):
+    """ Force all tex commands in the node to be in mathenv 
+    
+    it also checks if not already in mathmode to avoid issues.
+    """
+    for child in node.children:
+        if not isinstance(child.expr, TexMathModeEnv):
+            replace(title, child, TexMathModeEnv([child.expr]))
+    return node
+        
+
+
 class LatexFigure(dict):
     """ Representation of a figure from a LatexDocument
 
@@ -630,8 +671,7 @@ class LatexDocument:
         try:
             abstract = self.content.find_all('abstract')[0]
             # force math around macros
-            for child in abstract.children:
-                abstract.replace(child, TexMathModeEnv([child.expr]))   
+            abstract = force_mathmode(abstract)
             abstract = [str(k).strip() for k in abstract if str(k)]
             abstract = [l.replace('~', ' ').replace('\n', '').strip() for l in abstract if l[0] != '%']
             abstract = ' '.join(abstract)
@@ -652,8 +692,7 @@ class LatexDocument:
         # title = ''.join(self.content.find_all('title')[0].contents[-1])
         title = self.content.find_all('title')[0]
         # force math around macros
-        for child in title.children:
-            title.replace(child, TexMathModeEnv([child.expr]))  
+        title = force_mathmode(title)
         # remove BracketGroup (command options)
         title = [arg.string for arg in title.expr.args if arg.name != "BracketGroup"][0]
         title = ''.join(str(k) for k in title if 'thanks' not in str(k))
@@ -662,8 +701,7 @@ class LatexDocument:
             # subtitle = ''.join(self.content.find_all('subtitle')[0].contents[-1])
             # force math around macros
             subtitle = self.content.find_all('subtitle')[0]
-            for child in subtitle.children:
-                title.replace(subtitle, TexMathModeEnv([child.expr]))
+            subtitle = force_mathmode(subtitle)
             subtitle = [arg.string for arg in subtitle if arg.name != "BracketGroup"][0]
             subtitle = ''.join(str(k) for k in subtitle if 'thanks' not in str(k))
             text = ': '.join([title, subtitle]).replace('\n', '')
