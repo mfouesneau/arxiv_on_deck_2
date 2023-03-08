@@ -5,6 +5,7 @@ import pathlib
 from typing import Union, Sequence
 import re
 from TexSoup import TexSoup, TexNode
+from TexSoup.tex import TexMathModeEnv
 try:
     from IPython.display import Markdown
 except ImportError:
