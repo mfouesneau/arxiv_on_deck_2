@@ -175,18 +175,18 @@ def replace(self, child, *nodes):
         self.expr.insert(
             self.expr.remove(child.expr),
             *nodes)
-        
+
 
 def force_mathmode(node):
-    """ Force all tex commands in the node to be in mathenv 
-    
+    """ Force all tex commands in the node to be in mathenv
+
     it also checks if not already in mathmode to avoid issues.
     """
     for child in node.children:
         if not isinstance(child.expr, TexMathModeEnv):
             replace(node, child, TexMathModeEnv([child.expr]))
     return node
-        
+
 
 
 class LatexFigure(dict):
@@ -578,6 +578,7 @@ class LatexDocument:
             (r"\\'{\\i}", r'í'),
             (r"\\`{\\i}", r'ì'),
             (r"\\AA", r'Å'),
+            (r"\\degr", r'◦'),
         ]
 
         # add those without the {}
