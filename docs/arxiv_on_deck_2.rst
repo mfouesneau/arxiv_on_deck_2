@@ -35,9 +35,9 @@ arxiv\_on\_deck\_2.latex module
    :members:
    :undoc-members:
    :show-inheritance:
-   
+
 arxiv\_on\_deck\_2.latexbib module
--------------------------------
+----------------------------------
 
 .. automodule:: arxiv_on_deck_2.latexbib
    :members:
