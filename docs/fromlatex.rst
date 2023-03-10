@@ -286,7 +286,7 @@ Highlighting authors
 
 The author list can also highlight some of the authors, for instance co-authors from an institute.
 
-We highlight authors in a document through the :func:`arxiv_on_deck_2.latex.LatexFigure.highlight_authors_in_list` function.
+We highlight authors in a document through the :func:`arxiv_on_deck_2.latex.LatexDocument.highlight_authors_in_list` function.
 Any author matching names in the provided list will be tagged with ``<mark>...</mark>``.
 
 Selection of figures
@@ -305,7 +305,7 @@ Additional macros
 
 As it is common for a paper to come with a suite of user defined macros, we need to include them in the output.
 We include them in a HTML div: ``<div class="macros" style="visibility:hidden;">`` to help the rendering layout.
-see :func:`arxiv_on_deck_2.latex.get_macros_markdown_text`.
+see :func:`arxiv_on_deck_2.latex.LatexDocument.get_macros_markdown_text`.
 
 We make sure that all calls to macros are in tex math mode to be handled by Mathjax or other processor (see: :func: `arxiv_on_deck_2.latex.force_mathmode`)
 
