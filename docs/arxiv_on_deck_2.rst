@@ -36,10 +36,10 @@ arxiv\_on\_deck\_2.latex module
    :undoc-members:
    :show-inheritance:
 
-arxiv\_on\_deck\_2.latexbib module
-----------------------------------
+arxiv\_on\_deck\_2.latex_bib module
+-----------------------------------
 
-.. automodule:: arxiv_on_deck_2.latexbib
+.. automodule:: arxiv_on_deck_2.latex_bib
    :members:
    :undoc-members:
    :show-inheritance:

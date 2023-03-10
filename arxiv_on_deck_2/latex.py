@@ -151,8 +151,10 @@ def tex2md(latex: str) -> str:
 # BUG in TexSoup: https://github.com/alvinwan/TexSoup/pull/141
 def replace(self, child, *nodes):
         r"""Replace provided node with node(s).
+
         :param TexNode child: Child node to replace
         :param TexNode nodes: List of nodes to subtitute in
+
         >>> from TexSoup import TexSoup
         >>> soup = TexSoup(r'''
         ... \begin{itemize}
