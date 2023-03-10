@@ -89,7 +89,7 @@ We clean the text for markdown special character:
 * :kbd:`\`\`` and :kbd:`''` become :kbd:`"`
 * Forced spaces in Latex are remove. Multiple spaces are reduced to single space characters. (e.g., :kbd:`~`  and :kbd:`\\,` )
 * Accents are replaced by their corresponding unicode character. (e.g., :kbd:`\\~{n}`, :kbd:`ñ`)
-* Finally, we replace common journal macros for figures to use `\\includegraphics` instead.
+* Finally, we replace common journal macros for figures to use ``\includegraphics`` instead.
 
 .. warning::
 
@@ -105,7 +105,7 @@ Parsing the TeX source
 The heavy lifting is mostly done by `TeXSoup <https://texsoup.alvinwan.com/>`_. TexSoup is a Python3 library for extracting data from Latex files. It is very much inspired by `BeautifulSoup <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>`_. It turns even invalid sources into a structure that you can navigate, search, and modify.
 
 We do not aim to retrieve every bit of the document. We are not trying to reproduce `ArXiv Vanity <https://www.arxiv-vanity.com/>`_. We do not need the exact text throughout the paper, so we can try to isolate potential error parts and remove them.
-(see `:func:`arxiv_on_deck_2.latex.get_source`). However, it is not always clear where a document can be broken and removing random parts does not always lead to a struturally correct document (removing endings of environments, for instance). Automated cleaning is not always possible.
+(see :func:`arxiv_on_deck_2.latex.get_content`). However, it is not always clear where a document can be broken and removing random parts does not always lead to a struturally correct document (removing endings of environments, for instance). Automated cleaning is not always possible.
 
 .. _parsing_debug:
 
@@ -227,7 +227,7 @@ We parse both commands and if present, we concatenate the title and subtitle wit
 
 Abstract
 ~~~~~~~~
-The command ``\abstract`` is used to define the abstract of the document regardless of the journal class. Sometimes it has one or multiple arguments. We extract all arguments and store the text as the abstract of the document (see :func:`arxiv_on_deck_2.latex.LatexDocument.get_abstract`).
+The command ``\abstract`` or environement ``\begin{abstract}...\end{abstract}`` are used to define the abstract of the document regardless of the journal class. Sometimes it has one or multiple arguments. We extract all arguments and store the text as the abstract of the document (see :func:`arxiv_on_deck_2.latex.LatexDocument.get_abstract`).
 
 .. _parsing_authors:
 
@@ -254,7 +254,7 @@ For each ``\figure`` and ``\\figure*`` environement, we extract the image file r
 
 We assume images refered by ``\includegraphics`` (we cleaned the text from ``\plotone``, ``\plottwo`` in the preprocessing). We also verify that the file(s) exist (see :func:`arxiv_on_deck_2.latex.find_graphics`).
 
-Finally we use the  :class:`arxiv_on_deck_2.latex.LatexFigure` class to store the extracted information. This class allows us to handle multiple figures and final rendering. In particular, we have a special handling for `pdf` and `eps` figures.
+Finally we use the  :class:`arxiv_on_deck_2.latex.LatexFigure` class to store the extracted information. This class allows us to handle multiple figures and final rendering. In particular, we have a special handling for `pdf` and `eps` figures to convert them to `png` images (see :func:`arxiv_on_deck_2.latex.convert_pdf_to_image` and :func:`arxiv_on_deck_2.latex.convert_eps_to_image`).
 
 
 .. _rendering:
@@ -291,6 +291,8 @@ Additional macros
 As it is common for a paper to come with a suite of user defined macros, we need to include them in the output.
 We include them in a HTML div: ``<div class="macros" style="visibility:hidden;">`` to help the rendering layout.
 see :func:`arxiv_on_deck_2.latex.get_macros_markdown_text`.
+
+We make sure that all calls to macros are in tex math mode to be handled by Mathjax or other processor (see: :func: `arxiv_on_deck_2.latex.force_mathmode`)
 
 Layout
 ~~~~~~
