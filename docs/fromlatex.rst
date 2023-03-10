@@ -12,7 +12,7 @@ There are multiple important steps in the processing of a Latex project folder.
 2. :ref:`inject_subdocs`
 3. :ref:`validation`
 4. :ref:`cleaning_source`
-5. :ref:`parsing`: :ref:`parsing_title`, :ref:`parsing_authors`, :ref:`parsing_abstract`,  :ref:`parsing_figures`, and :ref:`parsing_bib``
+5. :ref:`parsing`: :ref:`parsing_title`, :ref:`parsing_authors`, :ref:`parsing_abstract`,  :ref:`parsing_figures`, and :ref:`parsing_bib`
 6. :ref:`rendering`
 
 
