@@ -643,8 +643,13 @@ class LatexDocument:
         for num, fig in enumerate(figures, 1):
             # num = num
             # images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
-            images = [find_graphics(self.graphicspath, k.text[-1])
-                      for k in fig.find_all('includegraphics')]
+            images = []
+            for k in fig.find_all('includegraphics'):
+                try:
+                    images.append(find_graphics(self.graphicspath, k.text[-1]))
+                except FileNotFound:
+                    warnings.warn(LatexWarning(f"Could not find graphic {k}"))
+                    images.append('')
             try:
                 caps = fig.find_all('caption')
                 caption = []
