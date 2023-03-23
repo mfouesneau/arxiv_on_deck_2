@@ -647,7 +647,7 @@ class LatexDocument:
             for k in fig.find_all('includegraphics'):
                 try:
                     images.append(find_graphics(self.graphicspath, k.text[-1]))
-                except FileNotFound:
+                except FileNotFoundError:
                     warnings.warn(LatexWarning(f"Could not find graphic {k}"))
                     images.append('')
             try:
