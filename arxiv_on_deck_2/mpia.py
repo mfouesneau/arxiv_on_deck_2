@@ -8,6 +8,7 @@ Eventually Scientists should provide their publication names.
 from typing import Sequence
 from bs4 import BeautifulSoup
 import requests
+import re
 
 
 def parse_mpia_staff_list() -> Sequence[str]:
@@ -114,10 +115,7 @@ def strip_titles(name: str) -> str:
     :returns: cleaned name
     """
     titles = ('Dr.', 'Prof.', 'apl.', 'h.c.')
-    clean = name[:]
-    for title in titles:
-        clean = clean.replace(title, '')
-    return clean.strip()
+    return re.sub('|'.join(titles), '', name).strip()
 
 
 def get_mpia_mitarbeiter_list() -> Sequence[str]:
