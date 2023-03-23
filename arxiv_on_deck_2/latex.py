@@ -352,7 +352,7 @@ def inject_other_sources(maintex:str ,
 
     # the following matches the full filenames without extensions
     for match in externals:
-        ext = match.group(1)
+        ext = match.group(1).replace('"', '').replace("'", '')
         ext_ = os.path.splitext(os.path.basename(ext))[0]
         for subsource in texfiles:
             sub_ = os.path.splitext(os.path.basename(subsource))[0]
