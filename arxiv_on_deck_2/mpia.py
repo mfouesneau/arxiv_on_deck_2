@@ -109,12 +109,23 @@ def consider_variations(name: str) -> str:
     if new_name != name:
         return new_name
 
+def strip_titles(name: str) -> str:
+    """ Remove any title from name which could mess up with author parsing 
+    :returns: cleaned name
+    """
+    titles = ('Dr.', 'Prof.', 'apl.', 'h.c.')
+    clean = name[:]
+    for title in titles:
+        clean = clean.replace(title, '')
+    return clean.strip()
+
 
 def get_mpia_mitarbeiter_list() -> Sequence[str]:
     """ Get the main filtered list
     :returns: list of names (family name, full names, initials)
     """
     data = parse_mpia_staff_list()
+    data = map(strip_titles, data)
     filtered_data = list(filter(filter_non_scientists, data))
 
     name_variations = filter(lambda x: x is not None,
