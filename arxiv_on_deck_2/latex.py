@@ -122,6 +122,7 @@ def find_graphics(where: str, image: str, folder: str = '',
             for wk in where:
                 fname = os.path.join(folder, wk, image + f'{extension}')
                 if os.path.exists(fname):
+                    warnings.warn(LatexWarning(f'Recovered figure {image} as {fname}'))
                     return fname
     raise FileNotFoundError(f"Could not find figure {image}")
 
