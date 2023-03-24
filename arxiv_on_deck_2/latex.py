@@ -146,6 +146,9 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(.*)(\\centering)\n", r"", latex)
     latex = re.sub(r"\\label{.*?}", r"", latex)
     latex = re.sub(r"(.*)\\item", r"*", latex)
+    
+    # clear math with name $_k...$ by $name_k...$. This messes up with markdown italic.
+    latex = re.sub(r"(\w+?)\s?\$_(\w)", "$\\1_\\2", latex, 0, re.MULTILINE)
 
     return(latex)
 
