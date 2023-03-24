@@ -323,7 +323,9 @@ def replace_citations(full_md: str, bibdata: LatexBib, kind='all', raise_excepti
         keys = rk.groups()[1].split(',')
         try:
             values = [bibdata.get_citation_md(key.strip(), kind=kind) for key in keys]
-            mdtext = ' (' + ', '.join(values) + ') '
+            mdtext = ', '.join(values)
+            if kind in ('citep', 'citealt'):
+                mdtext = ' (' + mdtext + ') '
             new_text = ''.join((new_text,
                                full_md[last_pos: rk.start()],
                                mdtext))
