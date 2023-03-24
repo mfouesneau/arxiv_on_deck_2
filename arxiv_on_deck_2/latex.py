@@ -136,6 +136,7 @@ def tex2md(latex: str) -> str:
     latex = re.sub(r"(\\textit{)(.*?)\}", r"_\2_", latex)
     latex = re.sub(r"({\\it)(.*?)\}", r"_\2_", latex)
     latex = re.sub(r"(\\textsc{)(.*?)\}", r"\2", latex)
+    latex = re.sub(r"(\\sc{)(.*?)\}", r"\2", latex)
     latex = re.sub(r"(\\small{)(.*?)\}", r"\2", latex)
     latex = re.sub(r"(\\section{)(.*?)\}", r"### \2", latex)
     latex = re.sub(r"(.*)\\begin{equation}", r"\n\n$$", latex)
