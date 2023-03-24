@@ -840,7 +840,7 @@ class LatexDocument:
                 figures_.extend([f'<div id="div_fig{e:d}">\n', fk, '\n</div>'])
             figures_ = '\n'.join(figures_)
             text = text + '\n' + force_macros_mathmode(figures_, self.macros)
-        return  macros_md + text
+        return  text
 
     def _repr_markdown_(self):
         if Markdown is None:
