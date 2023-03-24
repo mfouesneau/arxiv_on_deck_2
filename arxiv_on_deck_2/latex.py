@@ -276,6 +276,26 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
     return selected_figures
 
 
+def get_arxivertag(source: str) -> list:
+    """ Retrieve the arxiver tag if any
+
+    To specify which figures authors want to appear alongside your paper, 
+    they can leave a comment in any .tex file as in this example:
+
+    %@ardddxiver{fig1, fig2, fig3}
+    
+    see: https://arxiver.moonhats.com/
+    
+    :param source: latex source
+    :returns: list of tagged figures
+    """
+    tags = re.findall(r'@arxiver{(.*?)}', source)
+    if tags:
+        return [k.strip() for k in tags[0].split(',')][:3]
+    else:
+        return []
+
+
 def clear_latex_comments(data: str) -> str:
     """ clean text from any comment
 
@@ -794,6 +814,22 @@ class LatexDocument:
         :return: list of selected figures
         """
         return select_most_cited_figures(self.figures, self.content)
+    
+    def select_arxivertag_figures(self):
+        """ Finds the figures references by the arxivertag
+        
+        :return: list of selected figures
+        """
+        tags = get_arxivertag(self.source)
+        if not tags:
+            return []
+        
+        selected = []
+        for fig in self.figures:
+            for tag in tags:
+                if any(tag in k for k in fig['images']) or (tag in fig['label']):
+                    selected.append(fig)
+        return selected
 
     def highlight_authors_in_list(self, hl_list: Sequence[str], verbose: bool = False):
         """ highlight all authors of the paper that match `lst` entries
@@ -822,7 +858,9 @@ class LatexDocument:
         latex_title = tex2md(self.title.replace('~', ' '))
         latex_authors = self.short_authors
         joined_latex_authors = ', '.join(latex_authors)
-        selected_latex_figures = self.select_most_cited_figures()
+        selected_latex_figures = self.select_arxivertag_figures()
+        if not selected_latex_figures:
+            selected_latex_figures = self.select_most_cited_figures()
         macros_md = self.get_macros_markdown_text() + '\n\n'
 
         text = f"""{macros_md}\n\n<div id="title">\n\n# {latex_title:s}\n\n</div>\n"""
