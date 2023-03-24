@@ -276,6 +276,26 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
     return selected_figures
 
 
+def get_arxivertag(source: str) -> list:
+    """ Retrieve the arxiver tag if any
+
+    To specify which figures authors want to appear alongside your paper, 
+    they can leave a comment in any .tex file as in this example:
+
+    %@ardddxiver{fig1, fig2, fig3}
+    
+    see: https://arxiver.moonhats.com/
+    
+    :param source: latex source
+    :returns: list of tagged figures
+    """
+    tags = re.findall(r'@arxiver{(.*?)}', source)
+    if tags:
+        return [k.strip() for k in tags[0].split(',')][:3]
+    else:
+        return []
+
+
 def clear_latex_comments(data: str) -> str:
     """ clean text from any comment
 
