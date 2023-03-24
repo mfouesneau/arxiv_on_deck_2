@@ -189,9 +189,12 @@ def force_mathmode(node):
 
     it also checks if not already in mathmode to avoid issues.
     """
+    skip_commands = r'cite.*'
+    
     for child in node.children:
         if not isinstance(child.expr, TexMathModeEnv):
-            replace(node, child, TexMathModeEnv([child.expr]))
+            if not re.match(skip_commands, child.expr.name):
+                replace(node, child, TexMathModeEnv([child.expr]))
     return node
 
 
