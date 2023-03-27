@@ -125,6 +125,16 @@ def find_graphics(where: str, image: str, folder: str = '',
                     warnings.warn(LatexWarning(f'Recovered figure {image} as {fname}'))
                     return fname
     raise FileNotFoundError(f"Could not find figure {image}")
+    
+    
+def figure_fallback(source: str) -> Sequence[str]:
+    """When TexSoup fails, falls back procedure into pure regex to parse the paper 
+    :param source: latex source to parse
+    :return: list of figure or figure* environments found in the source.
+    """
+    figure_regex = r"\\begin{figure[*]*}.*?\\end{figure[*]*}"
+    results = re.findall(figure_regex, source, re.IGNORECASE | re.DOTALL)
+    return results
 
 
 def tex2md(latex: str) -> str:
@@ -665,11 +675,15 @@ class LatexDocument:
         :return: sequence of LatexFigure objects
         """
         figures = self.content.find_all('figure') + self.content.find_all('figure*')
+        if not figures:
+            # Falling back into pure regex parsing
+            warnings.warn(LatexWarning("Falling back to regex to find figures"))
+            results = figure_fallback(self.source)
+            figures = TexSoup(results)
+            warnings.warn(LatexWarning("Fallback: found " + str(len(results)) + " figures."))
         folder = self.folder
         data = []
         for num, fig in enumerate(figures, 1):
-            # num = num
-            # images = [f"{folder}/" + k.text[-1] for k in fig.find_all('includegraphics')]
             images = []
             for k in fig.find_all('includegraphics'):
                 try:
