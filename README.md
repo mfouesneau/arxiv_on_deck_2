@@ -1,8 +1,8 @@
 # arxiv_on_deck_2
 
-[![documentation](https://github.com/mfouesneau/arxiv_vanity_on_deck/actions/workflows/documentation.yml/badge.svg)](https://mfouesneau.github.io/arxiv_vanity_on_deck)
+[![documentation](https://github.com/mfouesneau/arxiv_on_deck_2/actions/workflows/documentation.yml/badge.svg)](https://mfouesneau.github.io/arxiv_on_deck_2)
 
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/mfouesneau/arxiv_vanity_on_deck/main)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/mfouesneau/arxiv_on_deck_2/main)
 
 This package is the next version of [arxiv_on_deck](https://github.com/mfouesneau/arxiv_on_deck),
 a quick and dirty version of the Arxiver.
@@ -21,4 +21,4 @@ It does not compile the original LaTeX documents and only extracts the relevant 
 
 ## Examples
 
-[![nbviewer](https://img.shields.io/badge/render%20on-nbviewer-orange.svg)](https://nbviewer.org/github/mfouesneau/arxiv_vanity_on_deck/blob/main/examples/notebook.ipynb) view notebook
+[![nbviewer](https://img.shields.io/badge/render%20on-nbviewer-orange.svg)](https://nbviewer.org/github/mfouesneau/arxiv_on_deck_2/blob/main/examples/notebook.ipynb) view notebook
