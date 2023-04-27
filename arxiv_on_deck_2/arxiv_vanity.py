@@ -194,10 +194,10 @@ def author_match(author: str, hl_list: Sequence[str], verbose=False) -> Sequence
     :return: the matching sequences or empty sequence if None
     """
     for hl in hl_list:
-        match = re.findall(r"\b{:s}\b".format(hl), author, re.IGNORECASE)
-        if hl in author:
+        match = re.findall(r"\b{:s}\b".format(author), hl, re.IGNORECASE)
+        if match:
             if verbose:
-                print(author, hl, match)
+                print(author, ' -> ',  hl, ' | ', match)
             return match
 
 
@@ -213,7 +213,7 @@ def highlight_authors_in_list(author_list: Sequence[str],
     """
     new_authors = []
     for author in author_list:
-        match = author_match(author, hl_list)
+        match = author_match(author, hl_list, verbose=verbose)
         if match:
             new_authors.append(f"<mark>{author}</mark>")
         else:
