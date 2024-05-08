@@ -123,8 +123,12 @@ def get_new_papers() -> Sequence[ArxivPaper]:
     response = requests.get(url)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'html.parser')
-    date = soup.find_all('div', {'class': 'list-dateline'})[0].text.replace('\n', '').split(',')[-1].strip()
-    date = str(datetime.strptime(date, '%d %b %y').date())
+    try:
+        date = soup.find_all('div', {'class': 'list-dateline'})[0].text.replace('\n', '').split(',')[-1].strip()
+        date = str(datetime.strptime(date, '%d %b %y').date())
+    except IndexError:
+        date = str(datetime.now().date())
+        
     r = soup.find_all('dl')[0].find_all(['dt', 'dd'])
     new_papers = [ArxivPaper.from_bs4_tags(dt, dd) for dt, dd in zip(r[::2], r[1::2])]
     for paper in new_papers:
