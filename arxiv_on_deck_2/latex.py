@@ -48,18 +48,30 @@ def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
 
     warnings.warn(LatexWarning('Multiple tex files.\n'), stacklevel=4)
     selected = None
+    candidates = []
+    # Define a regular expression pattern to match the content starting with % and ending with \n but not including the \n
+    latex_comment_pattern = r"%.*(?=\n)"
     for e, fname in enumerate(texfiles):
         with open(fname, 'r', errors="surrogateescape") as finput:
-            if 'documentclass' in finput.read():
-                selected = e, fname
-                break
-    if selected is not None:
+            content = finput.read()
+            if 'documentclass' in content:
+                length = re.sub(latex_comment_pattern, "", content).count("\n")
+                candidates.append((e, fname, length))
+    if len(candidates) == 1:
+        selected = candidates[0][1]
         warnings.warn(LatexWarning(
             "Found documentclass in {0:s}\n".format(str(selected[1]))), stacklevel=4)
     else:
+        warnings.warn(LatexWarning(f"Found {len(candidates)} candidates with documentclass definition."), stacklevel=4)
+        for e, fname, n in candidates:
+            print(f"  {e}: {fname}, {n:,d} lines")
+        _, fname, _ = max(candidates, key=lambda x: x[2])
+        warnings.warn(LatexWarning(f"Assuming {fname} as main document."), stacklevel=4)
+        selected = fname
+    if selected is None:
         raise RuntimeError('Could not locate the main document automatically.'
                            'Little help please!')
-    return str(selected[1])
+    return str(selected)
 
 
 def convert_pdf_to_image(fname: str) -> str:
