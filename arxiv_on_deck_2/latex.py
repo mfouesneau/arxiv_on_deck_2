@@ -294,6 +294,9 @@ def select_most_cited_figures(figures: Sequence[LatexFigure],
     # Find the number of references to each figure
     sorted_figures = sorted([(content.text.count(fig['label']), fig) for fig in figures],
                             key=lambda x: x[0], reverse=True)
+    # make sure there is a detected image
+    sorted_figures = [(k, v) for k, v in sorted_figures if v['images'] not in ('', [''], None)]
+    # extract the first N figures that seem to be valid.
     selected_figures = [k[1] for k in sorted_figures[:N]]
     return selected_figures
 
