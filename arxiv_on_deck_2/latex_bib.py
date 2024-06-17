@@ -322,7 +322,16 @@ def replace_citations(full_md: str, bibdata: LatexBib, kind='all', raise_excepti
     for rk in r:
         keys = rk.groups()[1].split(',')
         try:
-            values = [bibdata.get_citation_md(key.strip(), kind=kind) for key in keys]
+            values = []
+            for key in keys:
+                try:
+                    values.append(bibdata.get_citation_md(key.strip(), kind=kind))
+                except KeyError as e:
+                    if raise_exceptions:
+                        raise(e)
+                    else:
+                        values.append(key)
+                        print(f"Error retrieving bib data for {key}: {e}") 
             mdtext = ', '.join(values)
             if kind in ('citep', 'citealt'):
                 mdtext = ' (' + mdtext + ') '
