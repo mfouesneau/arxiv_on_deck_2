@@ -767,7 +767,7 @@ class LatexDocument:
             # force math around macros
             subtitle = self.content.find_all('subtitle')[0]
             subtitle = force_mathmode(subtitle)
-            subtitle = [arg.string for arg in subtitle if arg.name != "BracketGroup"][0]
+            subtitle = [arg.string for arg in subtitle.expr.args if arg.name != "BracketGroup"][0]
             subtitle = ''.join(str(k) for k in subtitle if 'thanks' not in str(k))
             text = ': '.join([title, subtitle]).replace('\n', '')
         except:
