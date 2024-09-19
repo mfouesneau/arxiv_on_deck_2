@@ -1,5 +1,4 @@
 name: documentation
-
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -14,6 +13,8 @@ on:
   release:
     types: # This configuration does not affect the page_build event above
       - created
+permissions:
+  contents: write
 
 jobs:
   build:
