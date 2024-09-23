@@ -54,7 +54,7 @@ def get_special_corrections(initials_name:str) -> str:
     collected = {
     'S. R. Khoshbakht': 'S. Rezaei Kh.',
     'E. B. Torres': 'E. Bañados',
-    'L. Acuna':, "L. Acuña",
+    'L. Acuna': "L. Acuña",
     }
 
     try:
