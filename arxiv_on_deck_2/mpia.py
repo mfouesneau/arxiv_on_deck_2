@@ -70,7 +70,7 @@ def filter_non_scientists(name: str) -> bool:
     :param name: name
     :returns: False if name is not a scientist
     """
-    remove_list = ['Wolf', 'Licht', 'Binroth', 'Witzel', 'Jordan',
+    remove_list = ['Licht', 'Binroth', 'Witzel', 'Jordan',
                    'Zähringer', 'Scheerer', 'Hoffmann', 'Düe',
                    'Hellmich', 'Enkler-Scharpegge', 'Witte-Nguy',
                    'Dehen', 'Beckmann'
