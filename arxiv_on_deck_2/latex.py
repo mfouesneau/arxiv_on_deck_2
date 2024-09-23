@@ -56,11 +56,11 @@ def find_main_doc(folder: str) -> Union[str, Sequence[str]]:
             content = finput.read()
             if 'documentclass' in content:
                 length = re.sub(latex_comment_pattern, "", content).count("\n")
-                candidates.append((e, fname, length))
+                candidates.append((e, str(fname), length))
     if len(candidates) == 1:
         selected = candidates[0][1]
         warnings.warn(LatexWarning(
-            "Found documentclass in {0:s}\n".format(str(selected[1]))), stacklevel=4)
+            "Found documentclass in {0:s}\n".format(str(selected))), stacklevel=4)
     else:
         warnings.warn(LatexWarning(f"Found {len(candidates)} candidates with documentclass definition."), stacklevel=4)
         for e, fname, n in candidates:
