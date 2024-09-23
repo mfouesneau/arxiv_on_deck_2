@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Rendering from Latex source &#8212; ArXiV on Deck 2</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'fromlatex';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Galactic spiral structure revealed by Gaia Edr3" href="examples/2103.01970.html" />
+    <link rel="prev" title="Welcome to ArXiV on Deck 2’s documentation!" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">ArXiV on Deck 2</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Rendering from Latex source</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">papers:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/2103.01970.html">Galactic spiral structure revealed by Gaia Edr3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/2111.06672.html">Three-dimensional dust density structure of the Orion, Cygnus X, Taurus, and Perseus star-forming regions</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="arxiv_on_deck_2.html">arxiv_on_deck_2 package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mfouesneau/arxiv_vanity_on_deck" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mfouesneau/arxiv_vanity_on_deck/edit/main/docs/fromlatex.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mfouesneau/arxiv_vanity_on_deck/issues/new?title=Issue%20on%20page%20%2Ffromlatex.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/fromlatex.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Rendering from Latex source</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-main-document">Finding the main document</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flattening-document">Flattening document</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-step-optional">Validation step (optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code-preprocessing-cleaning">Source code preprocessing (cleaning)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parsing-the-tex-source">Parsing the TeX source</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-document">Debugging document</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-macros">Handling Macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#title-and-subtitle">Title and subtitle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract">Abstract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authors">Authors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#figures">Figures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bibliography">Bibliography</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-rendering">Summary Rendering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#highlighting-authors">Highlighting authors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-of-figures">Selection of figures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-macros">Additional macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replace-citation-macros">Replace citation macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#layout">Layout</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="rendering-from-latex-source">
+<h1>Rendering from Latex source<a class="headerlink" href="#rendering-from-latex-source" title="Permalink to this heading">#</a></h1>
+<p>The <a class="reference internal" href="arxiv_on_deck_2.html#module-arxiv_on_deck_2.latex" title="arxiv_on_deck_2.latex"><code class="xref py py-mod docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex</span></code></a> module provides all the functions and methods to extract and render Latex projects.</p>
+<p>The main class <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument" title="arxiv_on_deck_2.latex.LatexDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument</span></code></a> handles the latex document interface. It parses the content of a give folder, and extract the title, authors, figures, and abstract of a documents.</p>
+<p>There are multiple important steps in the processing of a Latex project folder.</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#main-doc"><span class="std std-ref">Finding the main document</span></a></p></li>
+<li><p><a class="reference internal" href="#inject-subdocs"><span class="std std-ref">Flattening document</span></a></p></li>
+<li><p><a class="reference internal" href="#validation"><span class="std std-ref">Validation step (optional)</span></a></p></li>
+<li><p><a class="reference internal" href="#cleaning-source"><span class="std std-ref">Source code preprocessing (cleaning)</span></a></p></li>
+<li><p><a class="reference internal" href="#parsing"><span class="std std-ref">Parsing the TeX source</span></a>: <a class="reference internal" href="#parsing-title"><span class="std std-ref">Title and subtitle</span></a>, <a class="reference internal" href="#parsing-authors"><span class="std std-ref">Authors</span></a>, <a class="reference internal" href="#parsing-abstract"><span class="std std-ref">Abstract</span></a>,  <a class="reference internal" href="#parsing-figures"><span class="std std-ref">Figures</span></a>, and <a class="reference internal" href="#parsing-bib"><span class="std std-ref">Bibliography</span></a></p></li>
+<li><p><a class="reference internal" href="#rendering"><span class="std std-ref">Summary Rendering</span></a></p></li>
+</ol>
+<section id="finding-the-main-document">
+<span id="main-doc"></span><h2>Finding the main document<a class="headerlink" href="#finding-the-main-document" title="Permalink to this heading">#</a></h2>
+<p>It is very common to have multiple <cite>.tex</cite> files in a project. The main document is
+the one that contains the <cite>documentclass</cite> command.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is important to note that the code cannot make a distinction between <cite>.tex</cite> files, hence if two of those have a <cite>documentclass</cite> command it is unclear which one is the main document.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.find_main_doc" title="arxiv_on_deck_2.latex.find_main_doc"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.find_main_doc()</span></code></a>.</p>
+</div>
+</section>
+<section id="flattening-document">
+<span id="inject-subdocs"></span><h2>Flattening document<a class="headerlink" href="#flattening-document" title="Permalink to this heading">#</a></h2>
+<p>One common practice in writting documents is to have <cite>include</cite> or <cite>input</cite> commands in the main document. Having multiple files allows to have clean main tex, and facilitate working with multiple contributors. For instance, tables are often from a different file.</p>
+<p>For every <cite>include</cite> or <cite>input</cite> command in the main document, we replace the command by the content of the referenced file. This step is called _flattening_: it removes the nested structure of the document.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.inject_other_sources" title="arxiv_on_deck_2.latex.inject_other_sources"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.inject_other_sources()</span></code></a>.</p>
+</div>
+</section>
+<section id="validation-step-optional">
+<span id="validation"></span><h2>Validation step (optional)<a class="headerlink" href="#validation-step-optional" title="Permalink to this heading">#</a></h2>
+<p>In our application, we do not want to process documents that are not meeting some criteria (e.g., presence of affiliation keywords). It is at this stage that we check for affiliations, i.e., after flattening the document (sometimes a separate file provides the authors and affiliations.)</p>
+<p><a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument" title="arxiv_on_deck_2.latex.LatexDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument</span></code></a> takes a <cite>validation</cite> optional keyword argument. It corresponds to a function applied to the document source. We use this function to raise an exception and stop the procedure.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Example of validation function</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validation</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises error paper during parsing of source file&quot;&quot;&quot;</span>
+    <span class="n">check</span> <span class="o">=</span> <span class="n">mpia</span><span class="o">.</span><span class="n">affiliation_verifications</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mpia.affiliation_verifications: &quot;</span> <span class="o">+</span> <span class="n">check</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.mpia.affiliation_verifications" title="arxiv_on_deck_2.mpia.affiliation_verifications"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.mpia.affiliation_verifications()</span></code></a>.</p>
+</div>
+</section>
+<section id="source-code-preprocessing-cleaning">
+<span id="cleaning-source"></span><h2>Source code preprocessing (cleaning)<a class="headerlink" href="#source-code-preprocessing-cleaning" title="Permalink to this heading">#</a></h2>
+<p>Latex is a power and flexible language. However, the drawback is that there is not a universal manner to setup a document and to write the content of it.</p>
+<p>We first remove any commented lines (or ends of lines) from the source (<a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.clear_latex_comments" title="arxiv_on_deck_2.latex.clear_latex_comments"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.clear_latex_comments()</span></code></a>) as well as series of empty lines (multiple empty lines become a single empty line).</p>
+<p>We also remove <cite>$$</cite> which has the issue of defining inline equation block but more often concatenate inline math blocks. It is very difficult to find when <cite>$$</cite> means something important in this context.</p>
+<p>We parse the header of the main document for macros.</p>
+<p>We clean the text for markdown special character:</p>
+<ul class="simple">
+<li><p><kbd class="kbd docutils literal notranslate">``</kbd> and <kbd class="kbd docutils literal notranslate">''</kbd> become <kbd class="kbd docutils literal notranslate">&quot;</kbd></p></li>
+<li><p>Forced spaces in Latex are remove. Multiple spaces are reduced to single space characters. (e.g., <kbd class="kbd docutils literal notranslate">~</kbd>  and <kbd class="kbd docutils literal notranslate">\,</kbd> )</p></li>
+<li><p>Accents are replaced by their corresponding unicode character. (e.g., <kbd class="kbd docutils literal notranslate">\~{n}</kbd>, <kbd class="kbd docutils literal notranslate">ñ</kbd>)</p></li>
+<li><p>Finally, we replace common journal macros for figures to use <code class="docutils literal notranslate"><span class="pre">\includegraphics</span></code> instead.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>prefer <code class="docutils literal notranslate"><span class="pre">\begin{equation}...\end{equation}</span></code> (and similar) to <code class="docutils literal notranslate"><span class="pre">$$</span> <span class="pre">...</span> <span class="pre">$$</span></code>.</p></li>
+<li><p>avoid mixing <code class="docutils literal notranslate"><span class="pre">\def</span></code>, <code class="docutils literal notranslate"><span class="pre">\gdef</span></code> (see latex documentation).</p></li>
+<li><p>Use proper declarations: <code class="docutils literal notranslate"><span class="pre">\def\name{..}</span></code> should read <code class="docutils literal notranslate"><span class="pre">\def{\name}{}</span></code> and <code class="docutils literal notranslate"><span class="pre">\newcommand\name[n]{..}</span></code> should read <code class="docutils literal notranslate"><span class="pre">\newcommand{\name}[n]{}</span></code>.</p></li>
+</ul>
+</div>
+</section>
+<section id="parsing-the-tex-source">
+<span id="parsing"></span><h2>Parsing the TeX source<a class="headerlink" href="#parsing-the-tex-source" title="Permalink to this heading">#</a></h2>
+<p>The heavy lifting is mostly done by <a class="reference external" href="https://texsoup.alvinwan.com/">TeXSoup</a>. TexSoup is a Python3 library for extracting data from Latex files. It is very much inspired by <a class="reference external" href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">BeautifulSoup</a>. It turns even invalid sources into a structure that you can navigate, search, and modify.</p>
+<p>We do not aim to retrieve every bit of the document. We are not trying to reproduce <a class="reference external" href="https://www.arxiv-vanity.com/">ArXiv Vanity</a>. We do not need the exact text throughout the paper, so we can try to isolate potential error parts and remove them.
+(see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.get_content" title="arxiv_on_deck_2.latex.get_content"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.get_content()</span></code></a>). However, it is not always clear where a document can be broken and removing random parts does not always lead to a struturally correct document (removing endings of environments, for instance). Automated cleaning is not always possible.</p>
+<section id="debugging-document">
+<span id="parsing-debug"></span><h3>Debugging document<a class="headerlink" href="#debugging-document" title="Permalink to this heading">#</a></h3>
+<p>We recomment instead to identify where there could be an issue. We use the following example which attempts to parse the source per section.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Bracketting problematic tex source errors</span><a class="headerlink" href="#id3" title="Permalink to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">TexSoup</span> <span class="kn">import</span> <span class="n">TexSoup</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">bracket_error</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Find problematic portions of the document &quot;&quot;&quot;</span>
+
+    <span class="c1"># Checking header</span>
+    <span class="n">begin_doc</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">begin\{document\}&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">source</span><span class="p">))</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">source</span><span class="p">[:</span><span class="n">begin_doc</span><span class="p">]</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\n\end</span><span class="si">{document}</span><span class="s2">&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Header check... &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">TexSoup</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Error in the header&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check the text per section until the end.</span>
+    <span class="c1"># Do not stop and try them all.</span>
+
+    <span class="n">problematic_text</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">sections</span> <span class="o">=</span> <span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="n">begin_doc</span><span class="p">,</span> <span class="s1">&#39;until first section&#39;</span><span class="p">)]</span> <span class="o">+</span>
+                <span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">section\{.*\}&#39;</span><span class="p">,</span> <span class="n">source</span><span class="p">)]</span> <span class="o">+</span>
+                <span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">begin\{appendix\}&#39;</span><span class="p">,</span> <span class="n">source</span><span class="p">)]</span>
+            <span class="p">)</span>
+
+    <span class="n">sections</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sections</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">prev_pos</span><span class="p">,</span> <span class="n">prev_name</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">span</span><span class="p">,</span> <span class="n">span_end</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">prev_pos</span><span class="p">:</span><span class="n">span</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prev_pos</span> <span class="o">&gt;</span> <span class="n">begin_doc</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\n\begin</span><span class="si">{document}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\n\end</span><span class="si">{document}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\n\end</span><span class="si">{document}</span><span class="s2">&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prev_pos</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">prev_name</span><span class="si">}</span><span class="s2">--&gt;</span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> check... &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">TexSoup</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># allow not ending env</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+            <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">span</span>
+            <span class="n">prev_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;error between </span><span class="si">{</span><span class="n">prev_pos</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">problematic_text</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">prev_pos</span><span class="p">,</span> <span class="n">source</span><span class="p">[</span><span class="n">prev_pos</span><span class="p">:</span><span class="n">span</span><span class="p">]))</span>
+            <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">span</span>
+            <span class="n">prev_name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="c1"># raise</span>
+    <span class="k">return</span> <span class="n">problematic_text</span>
+</pre></div>
+</div>
+</div>
+<p>Once we identify the section, we can try to further isolate the problematic Tex environement with the following.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Example of problematic environement</span><a class="headerlink" href="#id4" title="Permalink to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">check_environment</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot; Check environment &quot;&quot;&quot;</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">begin\{(?P&lt;env&gt;.*)\}(.*)</span><span class="se">\\</span><span class="s2">end\{(?P=env)\}&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">beg</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+    <span class="n">beg</span> <span class="o">+=</span> <span class="n">offset</span>
+    <span class="n">end</span> <span class="o">+=</span> <span class="n">offset</span>
+    <span class="n">envname</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">latex</span><span class="o">.</span><span class="n">TexSoup</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">envname</span><span class="si">:</span><span class="s2">s</span><span class="si">}</span><span class="s2"> between </span><span class="si">{</span><span class="n">beg</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">beg</span><span class="p">,</span> <span class="n">end</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://texsoup.alvinwan.com/">TeXSoup</a></p>
+</div>
+</section>
+<section id="handling-macros">
+<span id="parsing-macros"></span><h3>Handling Macros<a class="headerlink" href="#handling-macros" title="Permalink to this heading">#</a></h3>
+<p>We detect macros defined in the header (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.retrieve_latex_macros" title="arxiv_on_deck_2.latex.LatexDocument.retrieve_latex_macros"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.retrieve_latex_macros()</span></code></a>).</p>
+<p>A detected macro definition is one of the following tex command <code class="docutils literal notranslate"><span class="pre">\providecommand</span></code>, <code class="docutils literal notranslate"><span class="pre">\command</span></code>, <code class="docutils literal notranslate"><span class="pre">\newcommand</span></code>, <code class="docutils literal notranslate"><span class="pre">\renewcommand</span></code>, <code class="docutils literal notranslate"><span class="pre">\def</span></code>, <code class="docutils literal notranslate"><span class="pre">\gdef</span></code>). We need some precaution as these can only be MathJax text,  we need to enforce <cite>math</cite> mode: <kbd class="kbd docutils literal notranslate">$</kbd> (with any spacing) are removed.</p>
+<p>We also provide default macros, typical for academic publications:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\ensuremath}{}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\xspace}{}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\object}[1]{\texttt{#1}}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\farcs}{{.}''}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\farcm}{{.}'}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\arcsec}{''}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\arcmin}{'}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\newcommand{\ion}[2]{#1#2}</span></code></p></li>
+</ul>
+</section>
+<section id="title-and-subtitle">
+<span id="parsing-title"></span><h3>Title and subtitle<a class="headerlink" href="#title-and-subtitle" title="Permalink to this heading">#</a></h3>
+<p>The command <code class="docutils literal notranslate"><span class="pre">\title</span></code> is used to define the abstract of the document regardless of the journal class.
+We parse both commands and if present, we concatenate the title and subtitle with a <cite>:</cite> (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.get_title" title="arxiv_on_deck_2.latex.LatexDocument.get_title"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.get_title()</span></code></a>).</p>
+</section>
+<section id="abstract">
+<span id="parsing-abstract"></span><h3>Abstract<a class="headerlink" href="#abstract" title="Permalink to this heading">#</a></h3>
+<p>The command <code class="docutils literal notranslate"><span class="pre">\abstract</span></code> or environement <code class="docutils literal notranslate"><span class="pre">\begin{abstract}...\end{abstract}</span></code> are used to define the abstract of the document regardless of the journal class. Sometimes it has one or multiple arguments. We extract all arguments and store the text as the abstract of the document (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.get_abstract" title="arxiv_on_deck_2.latex.LatexDocument.get_abstract"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.get_abstract()</span></code></a>).</p>
+</section>
+<section id="authors">
+<span id="parsing-authors"></span><h3>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">#</a></h3>
+<p>The definition of authors in the usual Journal Tex classes is very non-universal. Some of them allow <a class="reference external" href="orcid.org">ORCID</a>, some do not, which often leads to ad-hoc additional macros. We parse the author list (indicated by <code class="docutils literal notranslate"><span class="pre">\author</span></code>) store the text as the authors (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.get_authors" title="arxiv_on_deck_2.latex.LatexDocument.get_authors"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.get_authors()</span></code></a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The parsing of the authors does not always return correct information. This function will be refined in further versions.</p>
+</div>
+<p>We also provide a short author list, which by default turns a five and more author list into first author, et al. (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.short_authors" title="arxiv_on_deck_2.latex.LatexDocument.short_authors"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.short_authors()</span></code></a>).</p>
+</section>
+<section id="figures">
+<span id="parsing-figures"></span><h3>Figures<a class="headerlink" href="#figures" title="Permalink to this heading">#</a></h3>
+<p>Often authors like to use specifications for their <code class="docutils literal notranslate"><span class="pre">\graphicspath</span></code>. We parse the header of the document for this specific macro and we propagate it to the extraction of the figures.</p>
+<p>For each <code class="docutils literal notranslate"><span class="pre">\figure</span></code> and <code class="docutils literal notranslate"><span class="pre">\\figure*</span></code> environement, we extract the image file references (sometimes multiple files), the caption and label. (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.get_all_figures" title="arxiv_on_deck_2.latex.LatexDocument.get_all_figures"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.get_all_figures()</span></code></a>)</p>
+<p>We assume images refered by <code class="docutils literal notranslate"><span class="pre">\includegraphics</span></code> (we cleaned the text from <code class="docutils literal notranslate"><span class="pre">\plotone</span></code>, <code class="docutils literal notranslate"><span class="pre">\plottwo</span></code> in the preprocessing). We also verify that the file(s) exist (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.find_graphics" title="arxiv_on_deck_2.latex.find_graphics"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.find_graphics()</span></code></a>).</p>
+<p>Finally we use the  <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexFigure" title="arxiv_on_deck_2.latex.LatexFigure"><code class="xref py py-class docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexFigure</span></code></a> class to store the extracted information. This class allows us to handle multiple figures and final rendering. In particular, we have a special handling for <cite>pdf</cite> and <cite>eps</cite> figures to convert them to <cite>png</cite> images (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.convert_pdf_to_image" title="arxiv_on_deck_2.latex.convert_pdf_to_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.convert_pdf_to_image()</span></code></a> and <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.convert_eps_to_image" title="arxiv_on_deck_2.latex.convert_eps_to_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.convert_eps_to_image()</span></code></a>).</p>
+</section>
+<section id="bibliography">
+<span id="parsing-bib"></span><h3>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this heading">#</a></h3>
+<p>The bibliographic references in articles are important and often used in figure captions. It is therefore important to parse them in a readable format. We handle all references assuming a base of <cite>bibtex</cite> information using <a class="reference external" href="https://pybtex.org/">Pybtex</a>.</p>
+<p>We first look for a <cite>.bbl</cite> file in the document’s directory. This file corresponds to a compiled bibliography and links from the main document (usually generated by <cite>bibtex</cite>). When present, this ensure that we have matching bibliographic references in the document. One major issue with <cite>.bbl</cite> files is that the compiled references match the journal style and thus authors may be given in different formats (e.g. with commas, with initial first etc.). We parse, clean and organize this content to recreate a structured <cite>bibtex</cite> content from the <cite>.bbl</cite> file (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex_bib.parse_bbl" title="arxiv_on_deck_2.latex_bib.parse_bbl"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex_bib.parse_bbl()</span></code></a>)</p>
+<p>If we cannot find or parse the <cite>.bbl</cite> file, we extract the <cite>.bib</cite> reference in the main document. However, sometimes, authors do not provide their bibliographic file with their document.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We currently do not support manual definitions in the main document (e.g. <code class="docutils literal notranslate"><span class="pre">\bibitem</span></code>).</p>
+</div>
+</section>
+</section>
+<section id="summary-rendering">
+<span id="rendering"></span><h2>Summary Rendering<a class="headerlink" href="#summary-rendering" title="Permalink to this heading">#</a></h2>
+<p>We designed this version of <cite>ArXiV on Deck</cite> to output Markdown text. John Gruber and Aaron Swartz created Markdown in 2004 as a lightweight markup language for creating formatted ascii text, i.e. readable by a human in its source form. It has the advantage to be completely independent from a TeX compiler and packages. One only needs MathJax (or similar) to render the mathematical bits of the document in a nicer way than TeX code (still readable).</p>
+<p>Our summary contains the title, authors, comments, and three figures (with captions).</p>
+<section id="highlighting-authors">
+<h3>Highlighting authors<a class="headerlink" href="#highlighting-authors" title="Permalink to this heading">#</a></h3>
+<p>The author list can also highlight some of the authors, for instance co-authors from an institute.</p>
+<p>We highlight authors in a document through the <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.highlight_authors_in_list" title="arxiv_on_deck_2.latex.LatexDocument.highlight_authors_in_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.highlight_authors_in_list()</span></code></a> function.
+Any author matching names in the provided list will be tagged with <code class="docutils literal notranslate"><span class="pre">&lt;mark&gt;...&lt;/mark&gt;</span></code>.</p>
+</section>
+<section id="selection-of-figures">
+<h3>Selection of figures<a class="headerlink" href="#selection-of-figures" title="Permalink to this heading">#</a></h3>
+<p>For the summary, we select three figures from the paper. The selection is currently based on the most refered figures based on their labels (see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.select_most_cited_figures" title="arxiv_on_deck_2.latex.select_most_cited_figures"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.select_most_cited_figures()</span></code></a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The figure selection remains simple in this version.
+Currently, the Arxiver tag is not used:  <cite>%&#64;arxiver{fig1.pdf,fig4.png,fig15.eps}</cite>, but will be included in a future version.</p>
+</div>
+</section>
+<section id="additional-macros">
+<h3>Additional macros<a class="headerlink" href="#additional-macros" title="Permalink to this heading">#</a></h3>
+<p>As it is common for a paper to come with a suite of user defined macros, we need to include them in the output.
+We include them in a HTML div: <code class="docutils literal notranslate"><span class="pre">&lt;div</span> <span class="pre">class=&quot;macros&quot;</span> <span class="pre">style=&quot;visibility:hidden;&quot;&gt;</span></code> to help the rendering layout.
+see <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex.LatexDocument.get_macros_markdown_text" title="arxiv_on_deck_2.latex.LatexDocument.get_macros_markdown_text"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex.LatexDocument.get_macros_markdown_text()</span></code></a>.</p>
+<p>We make sure that all calls to macros are in tex math mode to be handled by Mathjax or other processor (see: :func: <cite>arxiv_on_deck_2.latex.force_mathmode</cite>)</p>
+</section>
+<section id="replace-citation-macros">
+<h3>Replace citation macros<a class="headerlink" href="#replace-citation-macros" title="Permalink to this heading">#</a></h3>
+<p>For any of <code class="docutils literal notranslate"><span class="pre">\citet</span></code>, <code class="docutils literal notranslate"><span class="pre">\citep</span></code>, <code class="docutils literal notranslate"><span class="pre">\citealt</span></code>, <code class="docutils literal notranslate"><span class="pre">\cite</span></code> command calls (in the summary content only), we replace the macro with a markdown equivalent using the bibliographic data we extracted from the main document. (see: <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex_bib.replace_citations" title="arxiv_on_deck_2.latex_bib.replace_citations"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex_bib.replace_citations()</span></code></a>) We render the citations with the astronomy standard of giving the first author et al. and year of the paper (see: <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex_bib.LatexBib.get_citation_md" title="arxiv_on_deck_2.latex_bib.LatexBib.get_citation_md"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex_bib.LatexBib.get_citation_md()</span></code></a>). If we can find a URL (<cite>url</cite> or <cite>adsurl`</cite>) or <cite>doi</cite>, we create an hyperlink with the citation text (see: <a class="reference internal" href="arxiv_on_deck_2.html#arxiv_on_deck_2.latex_bib.LatexBib.get_url" title="arxiv_on_deck_2.latex_bib.LatexBib.get_url"><code class="xref py py-func docutils literal notranslate"><span class="pre">arxiv_on_deck_2.latex_bib.LatexBib.get_url()</span></code></a>).</p>
+</section>
+<section id="layout">
+<h3>Layout<a class="headerlink" href="#layout" title="Permalink to this heading">#</a></h3>
+<p>The layout is basic from the Markdown source. To help potentially more complex presentation,
+we add HTML div to the document. Below is what a document looks like:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;div class=&quot;macros&quot; style=&quot;visibility:hidden;&quot;&gt;
+$\newcommand{\ensuremath}{}$
+$\newcommand{\xspace}{}$
+$\newcommand{\object}[1]{\texttt{#1}}$
+&lt;/div&gt;
+
+&lt;div id=&quot;title&quot;&gt;
+
+# Title
+
+&lt;/div&gt;
+
+&lt;div id=&quot;comments&quot;&gt;
+
+[![arXiv](https://img.shields.io/badge/arXiv-&lt;paper_id&gt;-b31b1b.svg)](https://arxiv.org/abs/&lt;paper_id&gt;) _Some comments_
+
+&lt;/div&gt;
+
+&lt;div id=&quot;authors&quot;&gt;
+
+first author, et al. -- incl., &lt;mark&gt;highlighted author&lt;/mark&gt;
+
+&lt;/div&gt;
+
+&lt;div id=&quot;abstract&quot;&gt;
+
+**Abstract:** The abstract of the text.
+
+&lt;/div&gt;
+
+&lt;div id=&quot;div_fig1&quot;&gt;
+
+&lt;img src=&quot;tmp_&lt;paper_id&gt;/figname9a.png&quot; alt=&quot;Fig9.1&quot; width=&quot;50%&quot;/&gt;&lt;img src=&quot;tmp_&lt;paper_id&gt;/figname9b.png&quot; alt=&quot;Fig9.2&quot; width=&quot;50%&quot;/&gt;
+
+**Figure 9. -** Caption of the two panel figure 9.
+
+&lt;/div&gt;
+&lt;div id=&quot;div_fig2&quot;&gt;
+
+&lt;img src=&quot;tmp_&lt;paper_id&gt;/fig3.png&quot; alt=&quot;Fig3&quot; width=&quot;100%&quot;/&gt;
+
+**Figure 3. -** Caption of Fig 3.
+
+&lt;/div&gt;
+&lt;div id=&quot;div_fig3&quot;&gt;
+
+&lt;img src=&quot;tmp_&lt;paper_id&gt;/fig10.png&quot; alt=&quot;Fig10&quot; width=&quot;100%&quot;/&gt;
+
+**Figure 10. -** Caption of Fig 10.
+
+&lt;/div&gt;
+</pre></div>
+</div>
+<p>Thanks to these divisions (<cite>&lt;div&gt;</cite>) one can change the CSS properties to render the summary as they prefer.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to ArXiV on Deck 2’s documentation!</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="examples/2103.01970.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Galactic spiral structure revealed by Gaia Edr3</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-main-document">Finding the main document</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flattening-document">Flattening document</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-step-optional">Validation step (optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code-preprocessing-cleaning">Source code preprocessing (cleaning)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parsing-the-tex-source">Parsing the TeX source</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-document">Debugging document</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-macros">Handling Macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#title-and-subtitle">Title and subtitle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract">Abstract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authors">Authors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#figures">Figures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bibliography">Bibliography</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-rendering">Summary Rendering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#highlighting-authors">Highlighting authors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-of-figures">Selection of figures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-macros">Additional macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replace-citation-macros">Replace citation macros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#layout">Layout</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morgan Fouesneau
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2021, Morgan Fouesneau.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
