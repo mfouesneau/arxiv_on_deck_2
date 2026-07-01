@@ -12,21 +12,27 @@ import re
 
 
 def parse_mpia_staff_list() -> Sequence[str]:
-    """ Parse the multi-page table from the MPIA website and returns the name column
+    """ Parse the staff table from the MPIA website and returns the name column
     :returns: list of names (full names)
     """
-    mitarbeiter_url = 'https://www.mpia.de/institut/mitarbeiter?letter=Alle&seite={pagenum}'
-    data = []
-    for pagenum in range(1, 100):
-        # print(f'parsing page {pagenum}')
-        response = requests.get(mitarbeiter_url.format(pagenum=pagenum))
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-        lst = soup.find_all('span', attrs={'class': 'employee_name'})
-        if not lst:
-            break
-        data.extend([k.text for k in lst])
-    return data
+    mitarbeiter_url = 'https://www.mpia.de/institut/mitarbeiter?letter=Alle'
+    response = requests.get(mitarbeiter_url)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.content, 'html.parser')
+    return [k.text for k in soup.find_all('span', attrs={'class': 'employee_name'})]
+
+
+def correct_full_name(name: str) -> str:
+    """ Replace a name with its corrected publication form if one is known
+    :param name: full name from the website
+    :returns: corrected name, or the original if no correction exists
+    """
+    corrections = {
+        'Lorena Acuna': 'Lorena Acuña',
+        'James Davies': 'James E. Davies',
+        "Raphael Hviding": "Raphael E. Hviding",
+    }
+    return corrections.get(name, name)
 
 
 def get_initials(name: str) -> str:
@@ -45,6 +51,7 @@ def get_initials(name: str) -> str:
     initials.append(split[-1])
     return ' '.join(initials)
 
+
 def get_special_corrections(initials_name:str) -> str:
     """ Handle non-generic cases of initials
     :param initials_name: name with initials
@@ -54,7 +61,6 @@ def get_special_corrections(initials_name:str) -> str:
     collected = {
     'S. R. Khoshbakht': 'S. Rezaei Kh.',
     'E. B. Torres': 'E. Bañados',
-    'L. Acuna': "L. Acuña",
     }
 
     try:
@@ -96,7 +102,7 @@ def consider_variations(name: str) -> str:
     :param name: name
     :returns: name with replacements
     """
-    # German umlaut, French accents
+    # German umlaut, French and Spanish accents
     new_name = name.replace("ö", "oe")\
                    .replace("ü", "ue")\
                    .replace("ä", "ae")\
@@ -105,11 +111,24 @@ def consider_variations(name: str) -> str:
                    .replace("é", "e")\
                    .replace("è", "e")\
                    .replace("ê", "e")\
+                   .replace("ë", "e")\
                    .replace("î", "i")\
                    .replace("û", "u")\
-                   .replace("ç", "c")
+                   .replace("ç", "c")\
+                   .replace("á", "a")\
+                   .replace("ó", "o")\
+                   .replace("í", "i")\
+                   .replace("ú", "u")\
+                   .replace("ñ", "n")\
+                   .replace("Á", "A")\
+                   .replace("É", "E")\
+                   .replace("Í", "I")\
+                   .replace("Ó", "O")\
+                   .replace("Ú", "U")\
+                   .replace("Ñ", "N")
     if new_name != name:
         return new_name
+
 
 def strip_titles(name: str) -> str:
     """ Remove any title from name which could mess up with author parsing 
@@ -125,8 +144,8 @@ def get_mpia_mitarbeiter_list() -> Sequence[str]:
     """
     data = parse_mpia_staff_list()
     data = map(strip_titles, data)
+    data = map(correct_full_name, data)
     filtered_data = list(filter(filter_non_scientists, data))
-
     name_variations = filter(lambda x: x is not None,
                              [consider_variations(name) for name in filtered_data])
     mitarbeiter_list = sorted(filtered_data + list(name_variations))

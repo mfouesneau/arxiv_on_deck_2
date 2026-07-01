@@ -173,7 +173,7 @@ def get_paper_from_identifier(paper_identifier: str) -> ArxivPaper:
                     .strip()
 
     # remove any version information and keep only first publication
-    date = re.sub('\(.*\)', '', date).strip()
+    date = re.sub(r'\(.*\)', '', date).strip()
     date = str(datetime.strptime(date, '%d %b %Y').date())
 
     data = dict(identifier=paper_identifier,

@@ -296,7 +296,7 @@ class LatexBib:
 
 
 def replace_citations(full_md: str, bibdata: LatexBib, kind='all', raise_exceptions: bool = False):
-    """ Parse and replace \citex calls remaining in the Markdown text
+    r""" Parse and replace \citex calls remaining in the Markdown text
 
     :param full_md: Markdown document
     :param bibdata: the bibliographic data
